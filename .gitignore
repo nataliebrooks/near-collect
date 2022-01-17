@@ -5,3 +5,5 @@ out/
 dist/
 
 .cache/
+
+neardev/
