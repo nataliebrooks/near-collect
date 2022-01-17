@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from "react";
+import { Item } from "./Item";
 
 const PER_PAGE_LIMIT = 3;
 
@@ -36,9 +37,9 @@ const ItemList = ({ contract }) => {
       <button onClick={() => setPage((page) => page - 1)}>&lt;</button>
       {" "}
       <button onClick={() => setPage((page) => page + 1)}>&gt;</button>
-      {!!items && items.map((item) => (
+      {items.map((item) => (
         <li key={item.id}>
-          <p>{item.name}</p>
+          <Item contract={contract} {...item} />
         </li>
       ))}
     </ul>

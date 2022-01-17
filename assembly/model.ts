@@ -1,4 +1,4 @@
-import { PersistentUnorderedMap, math } from "near-sdk-as";
+import { context, PersistentUnorderedMap, math } from "near-sdk-as";
 
 /**
  * The parameter to the constructor needs to be unique across a single contract.
@@ -15,11 +15,13 @@ export class PartialItem {
 @nearBindgen
 export class Item {
   id: u32;
+  creator: string;
   name: string;
   labelled: bool;
 
   constructor(name: string) {
     this.id = math.hash32<string>(name);
+    this.creator = context.sender;
     this.name = name;
     this.labelled = false;
   }

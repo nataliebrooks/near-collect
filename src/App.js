@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Big from 'big.js';
 import CreateItem from './components/CreateItem';
 import DeleteItem from './components/DeleteItem';
+import GetItem from './components/GetItem';
 import ItemList from './components/ItemList';
 import SignIn from './components/SignIn';
 
@@ -27,20 +28,23 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
     <main>
       <header>
         <h1>NEAR frontier</h1>
+        <h2>Common Good</h2>
         { currentUser
           ? <button onClick={signOut}>Log out</button>
           : <button onClick={signIn}>Log in</button>
         }
       </header>
+      <br/>
+      <br/>
       { currentUser
         ? 
           <>
             <CreateItem contract={contract} />
-            <DeleteItem contract={contract} />
+            <GetItem contract={contract} />
+            <ItemList contract={contract} />
           </>
         : <SignIn/>
       }
-      { !!currentUser && <ItemList contract={contract}/> }
     </main>
   );
 };
@@ -49,6 +53,7 @@ App.propTypes = {
   contract: PropTypes.shape({
     create: PropTypes.func.isRequired,
     get: PropTypes.func.isRequired,
+    getById: PropTypes.func.isRequired,
     update: PropTypes.func.isRequired,
     del: PropTypes.func.isRequired,
   }).isRequired,

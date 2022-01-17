@@ -11,7 +11,7 @@ const CreateItem = ({ contract }) => {
     setLoading(true);
 
     // invoke the smart contract's create method
-    const todo = await contract.create({ name });
+    const item = await contract.create({ name });
     setName("");
     setLoading(false);
 
