@@ -28,7 +28,7 @@ const GetItem = ({ contract }) => {
             id="get_item"
             type="text"
             placeholder="id"
-            value={name}
+            value={id}
             onChange={({ target }) => setId(target.value)}
           />
           <button className="bg-green-500 hover:bg-green-700 px-5 py-2 leading-tight rounded text-white" disabled={loading}>Get By Id</button>

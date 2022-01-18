@@ -24,11 +24,10 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
   };
 
   return (
-    <main className="max-w-8xl mx-auto bg-slate-900 text-slate-400">
+    <main>
       {/* Nav Bar Start */}
       <header>
         <div className="sticky top-0 z-40 w-full flex-none bg-transparent">
-          <div className="max-w-8xl mx-auto">
             <div className="py-4 border-b border-slate-300/10 mx-8">
               <div className="relative flex items-center">
                 <div>
@@ -45,13 +44,12 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
                   )}
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </header>
       {/* Nav Bar End */}
-      <div>
-        <div className="max-w-4xl mx-auto pt-10">
+      <div className="h-screen">
+        <div className="max-w-6xl mx-auto pt-10">
         {currentUser ? (
         <>
           <CreateItem contract={contract} />

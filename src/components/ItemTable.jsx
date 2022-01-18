@@ -4,7 +4,7 @@ import Table, { SelectColumnFilter } from "./Table";
 import { Item } from "./Item";
 import { classNames } from './shared/Utils'
 
-const PER_PAGE_LIMIT = 3;
+const PER_PAGE_LIMIT = 10;
 
 function StatusPill({ value }) {
   const status = value === "true" ? "active" : "needs label";
@@ -24,6 +24,20 @@ function StatusPill({ value }) {
   );
 };
 
+export function AvatarCell({ value, column, row }) {
+  return (
+    <div className="flex items-center">
+      {/* <div className="flex-shrink-0 h-10 w-10">
+        <img className="h-10 w-10 rounded-full" src={row.original[column.imgAccessor]} alt="" />
+      </div> */}
+      <div className="ml-4">
+        <div className="text-sm font-medium text-gray-900">{value}</div>
+        <div className="text-sm text-gray-500">{row.original[column.idAccessor]}</div>
+      </div>
+    </div>
+  )
+}
+
 const ItemTable = ({ contract }) => {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
@@ -33,6 +47,8 @@ const ItemTable = ({ contract }) => {
       {
         Header: "Name",
         accessor: "name",
+        Cell: AvatarCell,
+        idAccessor: "id"
       },
       {
         Header: "Creator",
@@ -41,13 +57,13 @@ const ItemTable = ({ contract }) => {
       {
         Header: "Status",
         accessor: "labelled",
-        Filter: SelectColumnFilter,
-        filter: "includes",
         Cell: StatusPill
       },
       {
         Header: "Category",
         accessor: "category",
+        Filter: SelectColumnFilter,
+        filter: "includes",
       },
       {
         Header: "Labels",
@@ -82,7 +98,7 @@ const ItemTable = ({ contract }) => {
     <>
       <h1 className="text-xl font-semibold">Items</h1>
       <div className="mt-4">
-        <Table columns={columns} data={[...items, ...items, ...items]} />
+        <Table columns={columns} data={items} />
       </div>
     </>
   );
