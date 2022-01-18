@@ -25,6 +25,8 @@ it('create an item and retrieve it', async() => {
     id: item.id,
     name: 'rock',
     labelled: false,
+    category: null,
+    labels: null,
     creator: accountId
   };
   expect(expectedItem).toEqual(actualItem);

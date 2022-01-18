@@ -39,13 +39,15 @@ describe("contract methods", () => {
   it('updates a Item', () => {
     const item = Item.insert('bottle');
 
-    update(item.id, { name: 'rock', labelled: true });
+    update(item.id, { name: 'rock', labelled: true, category: 'organic', labels: ['hard', 'brown', 'gucci'] });
 
     const ItemAfterUpdate = Item.findById(item.id);
 
     expect(ItemAfterUpdate.id).toStrictEqual(item.id);
     expect(ItemAfterUpdate.name).toStrictEqual('rock');
     expect(ItemAfterUpdate.labelled).toStrictEqual(true);
+    expect(ItemAfterUpdate.category).toStrictEqual('organic');
+    expect(ItemAfterUpdate.labels).toStrictEqual(['hard', 'brown', 'gucci']);
   });
 
   itThrows('deletes a Item', () => {

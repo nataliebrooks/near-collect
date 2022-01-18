@@ -5,7 +5,7 @@ import Big from "big.js";
 import CreateItem from "./components/CreateItem";
 import DeleteItem from "./components/DeleteItem";
 import GetItem from "./components/GetItem";
-import ItemList from "./components/ItemList";
+import ItemTable from "./components/ItemTable";
 import SignIn from "./components/SignIn";
 
 const App = ({ contract, currentUser, nearConfig, wallet }) => {
@@ -24,20 +24,20 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
   };
 
   return (
-    <main class="max-w-8xl mx-auto bg-slate-900 text-slate-400">
+    <main className="max-w-8xl mx-auto bg-slate-900 text-slate-400">
       {/* Nav Bar Start */}
       <header>
-        <div class="sticky top-0 z-40 w-full flex-none bg-transparent">
-          <div class="max-w-8xl mx-auto">
-            <div class="py-4 border-b border-slate-300/10 mx-8">
-              <div class="relative flex items-center">
+        <div className="sticky top-0 z-40 w-full flex-none bg-transparent">
+          <div className="max-w-8xl mx-auto">
+            <div className="py-4 border-b border-slate-300/10 mx-8">
+              <div className="relative flex items-center">
                 <div>
-                  <h1 class="text-2xl font-extrabold text-slate-200">
+                  <h1 className="text-2xl font-extrabold text-slate-200">
                     NEAR frontier
                   </h1>
-                  <h2 class="text-xl">common-good</h2>
+                  <h2 className="text-xl">common-good</h2>
                 </div>
-                <div class="ml-auto -my-1 flex items-center justify-center hover:text-slate-600">
+                <div className="ml-auto -my-1 flex items-center justify-center hover:text-slate-600">
                   {currentUser ? (
                     <button onClick={signOut}>Log out</button>
                   ) : (
@@ -51,12 +51,13 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
       </header>
       {/* Nav Bar End */}
       <div>
-        <div class="max-w-4xl mx-auto pt-10">
+        <div className="max-w-4xl mx-auto pt-10">
         {currentUser ? (
         <>
           <CreateItem contract={contract} />
           <GetItem contract={contract} />
-          <ItemList contract={contract} />
+          <br/>
+          <ItemTable contract={contract} />
         </>
       ) : (
         <SignIn />

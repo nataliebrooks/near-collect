@@ -10,6 +10,8 @@ export const items = new PersistentUnorderedMap<u32, Item>("item");
 export class PartialItem {
   name: string;
   labelled: bool;
+  category: string;
+  labels: string[];
 }
 
 @nearBindgen
@@ -18,6 +20,8 @@ export class Item {
   creator: string;
   name: string;
   labelled: bool;
+  category: string;
+  labels: string[];
 
   constructor(name: string) {
     this.id = math.hash32<string>(name);
@@ -60,6 +64,8 @@ export class Item {
     // update the item in-memory
     item.name = partial.name;
     item.labelled = partial.labelled;
+    item.category = partial.category;
+    item.labels = partial.labels;
 
     // persist the updated item
     items.set(id, item);
