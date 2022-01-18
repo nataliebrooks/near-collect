@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { useState } from "react";
 
 const CreateItem = ({ contract }) => {
@@ -16,19 +16,29 @@ const CreateItem = ({ contract }) => {
     setLoading(false);
 
     // print the item to the console
-    console.log('my item', name);
+    console.log("my item", name);
   };
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Example"
-        value={name}
-        onChange={({ target }) => setName(target.value)}
-      />
-      <button disabled={loading}>Create Item</button>
-    </form>
+    <>
+      <div class="w-full max-w-xs">
+        <form 
+        onSubmit={handleSubmit}>
+          <div class="relative flex items-center ">
+            <input
+              class="appearance-none block bg-slate-200 text-slate-700 pxborder rounded leading-tight focus:outline-none focus:bg-white"
+              id="create_item"
+              type="text"
+              placeholder="name"
+              value={name}
+              onChange={({ target }) => setName(target.value)}
+            />
+            <button class="bg-green-500 hover:bg-green-700 px-5 py-2 leading-tight rounded text-white" disabled={loading}>Create</button>
+          </div>
+          
+        </form>
+      </div>
+    </>
   );
-}
+};
 
 export default CreateItem;

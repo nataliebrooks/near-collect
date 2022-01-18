@@ -19,17 +19,24 @@ const GetItem = ({ contract }) => {
   };
   return (
     <>
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="{{ id }}"
-        value={id}
-        onChange={({ target }) => setId(target.value)}
-      />
-      <button disabled={loading}>Get Item</button>
-    </form>
-    <p> {!!item && item.name} </p> 
-    </>
+    <div class="w-full max-w-xs">
+      <form 
+      onSubmit={handleSubmit}>
+        <div class="relative flex items-center ">
+          <input
+            class="appearance-none block bg-slate-200 text-slate-700 pxborder rounded leading-tight focus:outline-none focus:bg-white"
+            id="get_item"
+            type="text"
+            placeholder="id"
+            value={name}
+            onChange={({ target }) => setId(target.value)}
+          />
+          <button class="bg-green-500 hover:bg-green-700 px-5 py-2 leading-tight rounded text-white" disabled={loading}>Get By Id</button>
+        </div>
+        
+      </form>
+    </div>
+  </>
   );
 }
 
