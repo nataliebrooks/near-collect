@@ -11,7 +11,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class Account extends Entity {
+export class Item extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -22,19 +22,19 @@ export class Account extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Account entity without an ID");
+    assert(id != null, "Cannot save Item entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        "Cannot save Account entity with non-string ID. " +
+        "Cannot save Item entity with non-string ID. " +
           'Considering using .toHex() to convert the "id" to a string.'
       );
-      store.set("Account", id.toString(), this);
+      store.set("Item", id.toString(), this);
     }
   }
 
-  static load(id: string): Account | null {
-    return changetype<Account | null>(store.get("Account", id));
+  static load(id: string): Item | null {
+    return changetype<Item | null>(store.get("Item", id));
   }
 
   get id(): string {
@@ -73,6 +73,8 @@ export class Log extends Entity {
     this.set("standard", Value.fromString(""));
     this.set("version", Value.fromString(""));
     this.set("event", Value.fromString(""));
+    this.set("tokenId", Value.fromString(""));
+    this.set("receiverId", Value.fromString(""));
   }
 
   save(): void {
@@ -128,105 +130,21 @@ export class Log extends Entity {
     this.set("event", Value.fromString(value));
   }
 
-  get adminId(): string | null {
-    let value = this.get("adminId");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+  get tokenId(): string {
+    let value = this.get("tokenId");
+    return value!.toString();
   }
 
-  set adminId(value: string | null) {
-    if (!value) {
-      this.unset("adminId");
-    } else {
-      this.set("adminId", Value.fromString(<string>value));
-    }
+  set tokenId(value: string) {
+    this.set("tokenId", Value.fromString(value));
   }
 
-  get adminSet(): BigInt | null {
-    let value = this.get("adminSet");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+  get receiverId(): string {
+    let value = this.get("receiverId");
+    return value!.toString();
   }
 
-  set adminSet(value: BigInt | null) {
-    if (!value) {
-      this.unset("adminSet");
-    } else {
-      this.set("adminSet", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get accountId(): string | null {
-    let value = this.get("accountId");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set accountId(value: string | null) {
-    if (!value) {
-      this.unset("accountId");
-    } else {
-      this.set("accountId", Value.fromString(<string>value));
-    }
-  }
-
-  get did(): string | null {
-    let value = this.get("did");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set did(value: string | null) {
-    if (!value) {
-      this.unset("did");
-    } else {
-      this.set("did", Value.fromString(<string>value));
-    }
-  }
-
-  get registered(): BigInt | null {
-    let value = this.get("registered");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set registered(value: BigInt | null) {
-    if (!value) {
-      this.unset("registered");
-    } else {
-      this.set("registered", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get owner(): string | null {
-    let value = this.get("owner");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set owner(value: string | null) {
-    if (!value) {
-      this.unset("owner");
-    } else {
-      this.set("owner", Value.fromString(<string>value));
-    }
+  set receiverId(value: string) {
+    this.set("receiverId", Value.fromString(value));
   }
 }

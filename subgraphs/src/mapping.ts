@@ -1,5 +1,5 @@
 import { near, log, json, JSONValueKind } from "@graphprotocol/graph-ts";
-import { Account, Log } from "../generated/schema";
+import { Item, Log } from "../generated/schema";
 
 export function handleReceipt(receipt: near.ReceiptWithOutcome): void {
   const actions = receipt.receipt.actions;
@@ -26,13 +26,13 @@ function handleAction(
     return;
   }
   
-  let accounts = new Account(receipt.signerId);
+  let item = new Item(receipt.signerId);
   const functionCall = action.toFunctionCall();
 
   // change the methodName here to the methodName emitting the log in the contract
-  if (functionCall.methodName == "putDID") {
+  if (functionCall.methodName == "nft_mint") {
     const receiptId = receipt.id.toHexString();
-      accounts.signerId = receipt.signerId;
+      item.signerId = receipt.signerId;
 
       // Maps the JSON formatted log to the LOG entity
       let logs = new Log(`${receiptId}`);
@@ -70,18 +70,12 @@ function handleAction(
             // Replace each key with the key of the data your are emitting,
             // Ensure you add the keys to the Log entity and that the types are correct
             switch (true) {
-              case key == 'accountId':
-                logs.accountId = data.entries[i].value.toString()
+              case key == 'tokenId':
+                logs.tokenId = data.entries[i].value.toString()
                 break
-              case key == 'did':
-                logs.did = data.entries[i].value.toString()
-                break
-              case key == 'registered':
-                logs.registered = data.entries[i].value.toBigInt()
-                break
-              case key == 'owner':
-                logs.owner = data.entries[i].value.toString()
-                break
+              case key == 'receiverId':
+                logs.receiverId = data.entries[i].value.toString()
+                break              
             }
           }
 
@@ -89,7 +83,7 @@ function handleAction(
         logs.save()
       }
 
-      accounts.log.push(logs.id);
+      item.log.push(logs.id);
       
   } else {
     log.info("Not processed - FunctionCall is: {}", [functionCall.methodName]);
@@ -116,5 +110,5 @@ function handleAction(
   //  }}}`)
 
   
-  accounts.save();
+  item.save();
 }
