@@ -1,0 +1,14 @@
+type Item @entity {
+  id: ID!
+  signerId: String!
+  log: [Log!]!
+}
+
+type Log @entity {
+  id: ID!
+  standard: String!
+  version: String!
+  event: String!
+  tokenId: String!
+  receiverId: String!
+}

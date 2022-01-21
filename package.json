@@ -1,18 +1,19 @@
 {
-  "name": "guest-book",
+  "name": "common-good",
   "version": "0.1.0",
   "license": "(MIT AND Apache-2.0)",
   "scripts": {
     "build": "yarn build:contract && yarn build:web",
-    "build:contract": "asb",
-    "build:contract:debug": "asb --target debug",
+    "build:contract": "(cd contracts/nft && ./build.sh)",
     "build:web": "parcel build src/index.html --public-url ./",
-    "deploy": "yarn build && near deploy",
-    "dev": "yarn build:contract:debug && near dev-deploy && nodemon --watch assembly -e ts --exec yarn dev:start",
+    "deploy": "yarn build && (yarn test:contract && near dev-deploy --wasmFile res/non-fungible_token.wasm)",
+    "dev": "yarn build:contract && near dev-deploy && yarn dev:start",
+    "set:contract": "source contracts/nft/neardev/dev-account.env",
     "lint": "eslint \"./**/*.js\" \"./**/*.jsx\"",
-    "start": "yarn deploy && parcel src/index.html",
+    "start": "yarn build:web && parcel src/index.html",
     "dev:start": "env-cmd -f ./neardev/dev-account.env parcel src/index.html",
-    "test": "yarn build:contract:debug && asp && jest"
+    "test:contract": "(cd contracts/nft && cargo test -- --nocapture)",
+    "test": "yarn test:contract && jest"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
