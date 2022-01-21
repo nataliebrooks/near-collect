@@ -24,7 +24,7 @@ use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::LazyOption;
 use near_sdk::json_types::ValidAccountId;
 use near_sdk::{
-    env, near_bindgen, AccountId, BorshStorageKey, PanicOnDefault, Promise, PromiseOrValue,
+    env, log, near_bindgen, AccountId, BorshStorageKey, PanicOnDefault, Promise, PromiseOrValue,
 };
 
 near_sdk::setup_alloc!();
@@ -98,6 +98,10 @@ impl Contract {
         receiver_id: ValidAccountId,
         token_metadata: TokenMetadata,
     ) -> Token {
+        // let log_message = format!("Created token {} for {}", token_id, receiver_id);
+        // env::log(log_message.as_bytes());
+        log!("{{\"EVENT_JSON\":{{\"token_id\":\"{}\",\"receiver_id\":\"{}\"}}}}",
+        token_id, receiver_id);
         self.tokens.mint(token_id, receiver_id, Some(token_metadata))
     }
 }
