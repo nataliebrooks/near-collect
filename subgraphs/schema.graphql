@@ -1,14 +1,41 @@
 type Item @entity {
   id: ID!
-  signerId: String!
-  log: [Log!]!
+  signerId: String!  
+  status: Status!
+  title: String
+  description: String
+  image: String # TODO
+  category: Category!
+  labels: [Label!]
+  log: [Log!]! # item history
 }
 
 type Log @entity {
   id: ID!
-  standard: String!
-  version: String!
-  event: String!
   tokenId: String!
   receiverId: String!
+  status: String!
+}
+
+
+# ---------------------------------------------------------
+# Enums ---------------------------------------------------
+# ---------------------------------------------------------
+
+enum Status @entity {
+  NEW
+}
+
+enum Category @entity {
+  uncategorized
+  fashion
+  electronics
+  furniture
+}
+
+enum Label @entity {
+  unlabelled
+  chair
+  shoe
+  round
 }

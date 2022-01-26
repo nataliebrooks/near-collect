@@ -9,13 +9,15 @@ dataSources:
     network: near-testnet # can choose either near-mainnet or near-testnet
     source:
       account: common-good.frontier.testnet # contract account you want to pull data from
-      startBlock: 79694998 # starting block on near-mainnet for indexing
+      startBlock: 80177542 # starting block on near-mainnet for indexing
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mapping.ts
       entities:
-        - Token # the example entity in the schema.graphql file
+        - Item # the example entity in the schema.graphql file
         - Log # example log entity in the schema.graphql file
       receiptHandlers:
         - handler: handleReceipt # name of the receipt handler
+
+        

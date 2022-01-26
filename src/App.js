@@ -11,7 +11,7 @@ import SignIn from "./components/SignIn";
 const App = ({ contract, currentUser, nearConfig, wallet }) => {
   const signIn = () => {
     wallet.requestSignIn(
-      { contractId: nearConfig.contractName }, //contract requesting access
+      { contractId: nearConfig.contractName, methodNames: [contract.nft_mint.name, contract.new_default_meta.name] }, //contract requesting access
       "NEAR frontier", //optional name
       null, //optional URL to redirect to if the sign in was successful
       null //optional URL to redirect to if the sign in was NOT successful
@@ -52,8 +52,8 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
         <div className="max-w-6xl mx-auto pt-10">
         {currentUser ? (
         <>
-          <CreateItem contract={contract} />
-          <GetItem contract={contract} />
+          <CreateItem contract={contract} currentUser={currentUser} />
+          {/* <GetItem contract={contract} /> */}
           <br/>
           <ItemTable contract={contract} />
         </>
@@ -69,11 +69,8 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
 
 App.propTypes = {
   contract: PropTypes.shape({
-    create: PropTypes.func.isRequired,
-    get: PropTypes.func.isRequired,
-    getById: PropTypes.func.isRequired,
-    update: PropTypes.func.isRequired,
-    del: PropTypes.func.isRequired,
+    nft_mint: PropTypes.func.isRequired,
+    new_default_meta: PropTypes.func.isRequired,
   }).isRequired,
   currentUser: PropTypes.shape({
     accountId: PropTypes.string.isRequired,

@@ -17,6 +17,8 @@ export class Item extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("signerId", Value.fromString(""));
+    this.set("status", Value.fromString(""));
+    this.set("category", Value.fromString(""));
     this.set("log", Value.fromStringArray(new Array(0)));
   }
 
@@ -55,6 +57,92 @@ export class Item extends Entity {
     this.set("signerId", Value.fromString(value));
   }
 
+  get status(): string {
+    let value = this.get("status");
+    return value!.toString();
+  }
+
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
+  }
+
+  get title(): string | null {
+    let value = this.get("title");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set title(value: string | null) {
+    if (!value) {
+      this.unset("title");
+    } else {
+      this.set("title", Value.fromString(<string>value));
+    }
+  }
+
+  get description(): string | null {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
+    }
+  }
+
+  get image(): string | null {
+    let value = this.get("image");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set image(value: string | null) {
+    if (!value) {
+      this.unset("image");
+    } else {
+      this.set("image", Value.fromString(<string>value));
+    }
+  }
+
+  get category(): string {
+    let value = this.get("category");
+    return value!.toString();
+  }
+
+  set category(value: string) {
+    this.set("category", Value.fromString(value));
+  }
+
+  get labels(): Array<string> | null {
+    let value = this.get("labels");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set labels(value: Array<string> | null) {
+    if (!value) {
+      this.unset("labels");
+    } else {
+      this.set("labels", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
   get log(): Array<string> {
     let value = this.get("log");
     return value!.toStringArray();
@@ -70,11 +158,9 @@ export class Log extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("standard", Value.fromString(""));
-    this.set("version", Value.fromString(""));
-    this.set("event", Value.fromString(""));
     this.set("tokenId", Value.fromString(""));
     this.set("receiverId", Value.fromString(""));
+    this.set("status", Value.fromString(""));
   }
 
   save(): void {
@@ -103,33 +189,6 @@ export class Log extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get standard(): string {
-    let value = this.get("standard");
-    return value!.toString();
-  }
-
-  set standard(value: string) {
-    this.set("standard", Value.fromString(value));
-  }
-
-  get version(): string {
-    let value = this.get("version");
-    return value!.toString();
-  }
-
-  set version(value: string) {
-    this.set("version", Value.fromString(value));
-  }
-
-  get event(): string {
-    let value = this.get("event");
-    return value!.toString();
-  }
-
-  set event(value: string) {
-    this.set("event", Value.fromString(value));
-  }
-
   get tokenId(): string {
     let value = this.get("tokenId");
     return value!.toString();
@@ -146,5 +205,14 @@ export class Log extends Entity {
 
   set receiverId(value: string) {
     this.set("receiverId", Value.fromString(value));
+  }
+
+  get status(): string {
+    let value = this.get("status");
+    return value!.toString();
+  }
+
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
   }
 }

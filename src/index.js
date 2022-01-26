@@ -1,14 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import getConfig from './config.js';
-import * as nearAPI from 'near-api-js';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import getConfig from "./config.js";
+import * as nearAPI from "near-api-js";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider
+} from "@apollo/client";
 
 // Initializing contract
 async function initContract() {
   // get network configuration values from config.js
   // based on the network ID we pass to getConfig()
-  const nearConfig = getConfig(process.env.NEAR_ENV || 'testnet');
+  const nearConfig = getConfig(process.env.NEAR_ENV || "testnet");
 
   // create a keyStore for signing transactions using the user's key
   // which is located in the browser local storage after user logs in
@@ -28,6 +33,7 @@ async function initContract() {
       accountId: walletConnection.getAccountId(),
       // Gets the user's token balance
       balance: (await walletConnection.account().state()).amount,
+
     };
   }
 
@@ -43,7 +49,7 @@ async function initContract() {
       // View methods are read-only – they don't modify the state, but usually return some value
       // viewMethods: ['get', 'getById'],
       // Change methods can modify the state, but you don't receive the returned value when called
-      changeMethods: ["nft_mint"],
+      changeMethods: ["nft_mint", "new_default_meta", "new"],
       // Sender is the account ID to initialize transactions.
       // getAccountId() will return empty string if user is still unauthorized
       sender: walletConnection.getAccountId(),
@@ -53,16 +59,24 @@ async function initContract() {
   return { contract, currentUser, nearConfig, walletConnection };
 }
 
+// Initializing client to common-good subgraph
+const client = new ApolloClient({
+  uri: "https://api.thegraph.com/subgraphs/name/elliotbraem/common-good",
+  cache: new InMemoryCache(),
+});
+
 window.nearInitPromise = initContract().then(
   ({ contract, currentUser, nearConfig, walletConnection }) => {
     ReactDOM.render(
-      <App
-        contract={contract}
-        currentUser={currentUser}
-        nearConfig={nearConfig}
-        wallet={walletConnection}
-      />,
-      document.getElementById('root')
+      <ApolloProvider client={client}>
+        <App
+          contract={contract}
+          currentUser={currentUser}
+          nearConfig={nearConfig}
+          wallet={walletConnection}
+        />
+      </ApolloProvider>,
+      document.getElementById("root")
     );
   }
 );

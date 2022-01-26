@@ -2,27 +2,26 @@ import React from "react";
 import { useEffect, useState, useMemo } from "react";
 import Table, { SelectColumnFilter } from "./Table";
 import { Item } from "./Item";
-import { classNames } from './shared/Utils'
+import { classNames } from "./shared/Utils";
+import { useQuery, gql } from "@apollo/client";
 
 const PER_PAGE_LIMIT = 10;
 
 function StatusPill({ value }) {
-  const status = value === "true" ? "active" : "needs label";
+  const status = value ? value : "todo";
 
   return (
     <span
-      className={
-        classNames(
-          "px-3 py-1 uppercase leading-wide font-bold text-xs rounded-full shadow-sm",
-          status.startsWith("active") ? "bg-green-100 text-green-800" : null,
-          status.startsWith("needs label") ? "bg-red-100 text-red-800" : null
-        )
-      }
+      className={classNames(
+        "px-3 py-1 uppercase leading-wide font-bold text-xs rounded-full shadow-sm",
+        status.startsWith("NEW") ? "bg-green-100 text-green-800" : null,
+        status.startsWith("needs label") ? "bg-red-100 text-red-800" : null
+      )}
     >
       {status}
     </span>
   );
-};
+}
 
 export function AvatarCell({ value, column, row }) {
   return (
@@ -32,32 +31,35 @@ export function AvatarCell({ value, column, row }) {
       </div> */}
       <div className="ml-4">
         <div className="text-sm font-medium text-gray-900">{value}</div>
-        <div className="text-sm text-gray-500">{row.original[column.idAccessor]}</div>
+        <div className="text-sm text-gray-500">
+          {row.original[column.idAccessor]}
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 const ItemTable = ({ contract }) => {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
+  const { loading, error, data } = useQuery(NEW_ITEMS_QUERY);
 
   const columns = useMemo(
     () => [
       {
         Header: "Name",
-        accessor: "name",
+        accessor: "title",
         Cell: AvatarCell,
-        idAccessor: "id"
+        idAccessor: "id",
       },
       {
         Header: "Creator",
-        accessor: "creator",
+        accessor: "signerId",
       },
       {
         Header: "Status",
-        accessor: "labelled",
-        Cell: StatusPill
+        accessor: "status",
+        Cell: StatusPill,
       },
       {
         Header: "Category",
@@ -73,35 +75,47 @@ const ItemTable = ({ contract }) => {
     []
   );
 
-  useEffect(() => {
-    let offset;
-    if (page < 1) {
-      setPage(1);
-      offset = 0;
-    } else {
-      offset = (page - 1) * PER_PAGE_LIMIT;
-    }
+  // useEffect(() => {
+  //   let offset;
+  //   if (page < 1) {
+  //     setPage(1);
+  //     offset = 0;
+  //   } else {
+  //     offset = (page - 1) * PER_PAGE_LIMIT;
+  //   }
 
-    // every second after the component first mounts
-    // update the list of Items by invoking the get
-    // method on the smart contract
-    const id = setInterval(() => {
-      contract
-        .get({ offset, limit: PER_PAGE_LIMIT })
-        .then((items) => setItems(items));
-    }, 1000);
+  //   // every second after the component first mounts
+  //   // update the list of Items by invoking the get
+  //   // method on the smart contract
+  //   const id = setInterval(() => {
+  //     contract
+  //       .get({ offset, limit: PER_PAGE_LIMIT })
+  //       .then((items) => setItems(items));
+  //   }, 1000);
 
-    return () => clearInterval(id);
-  }, [page, contract]);
+  //   return () => clearInterval(id);
+  // }, [page, contract]);
 
   return (
     <>
       <h1 className="text-xl font-semibold">Items</h1>
       <div className="mt-4">
-        <Table columns={columns} data={items} />
+        <Table columns={columns} data={(data && data.items) || []} />
       </div>
     </>
   );
 };
 
 export default ItemTable;
+
+const NEW_ITEMS_QUERY = gql`
+  query {
+    items(first: 5, where: { status: NEW }) {
+      id
+      signerId
+      status
+      category
+      labels
+    }
+  }
+`;
