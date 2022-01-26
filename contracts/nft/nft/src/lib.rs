@@ -57,8 +57,8 @@ impl Contract {
             owner_id,
             NFTContractMetadata {
                 spec: NFT_METADATA_SPEC.to_string(),
-                name: "Example NEAR non-fungible token".to_string(),
-                symbol: "EXAMPLE".to_string(),
+                name: "Create From common good".to_string(),
+                symbol: "test".to_string(),
                 icon: Some(DATA_IMAGE_SVG_NEAR_ICON.to_string()),
                 base_uri: None,
                 reference: None,
@@ -98,9 +98,9 @@ impl Contract {
         receiver_id: ValidAccountId,
         token_metadata: TokenMetadata,
     ) -> Token {
-        // let log_message = format!("Created token {} for {}", token_id, receiver_id);
-        // env::log(log_message.as_bytes());
-        log!("{{\"EVENT_JSON\":{{\"token_id\":\"{}\",\"receiver_id\":\"{}\"}}}}",
+        // TODO : Add any necessary information
+        // TODO : prettier this 
+        log!("{{\"EVENT_JSON\":{{\"token_id\":\"{}\",\"receiver_id\":\"{}\",\"status\":\"NEW\"}}}}",
         token_id, receiver_id);
         self.tokens.mint(token_id, receiver_id, Some(token_metadata))
     }
