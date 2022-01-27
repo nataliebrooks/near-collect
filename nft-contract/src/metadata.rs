@@ -7,6 +7,7 @@ pub struct Payout {
     pub payout: HashMap<AccountId, U128>,
 } 
 
+// Defines the common good project, anything that needs to define or be built atop this contract
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub struct NFTContractMetadata {
@@ -19,6 +20,7 @@ pub struct NFTContractMetadata {
     pub reference_hash: Option<Base64VecU8>, // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
 }
 
+// Metadeta describing an item; Producer takes picture, describes it, 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct TokenMetadata {
@@ -49,6 +51,7 @@ pub struct Token {
 }
 
 //The Json token is what will be returned from view calls. 
+// This is what will be visible to the UI
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct JsonToken {

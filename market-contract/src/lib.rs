@@ -11,12 +11,14 @@ use std::collections::HashMap;
 use crate::external::*;
 use crate::internal::*;
 use crate::sale::*;
+use crate::order::*;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 
 mod external;
 mod internal;
 mod nft_callbacks;
 mod sale;
+mod order;
 mod sale_views;
 
 //GAS constants to attach to calls
@@ -51,19 +53,33 @@ pub struct Payout {
 pub struct Contract {
     //keep track of the owner of the contract
     pub owner_id: AccountId,
-    
+
     /*
-        to keep track of the sales, we map the ContractAndTokenId to a Sale. 
-        the ContractAndTokenId is the unique identifier for every sale. It is made
+        to keep track of the orders, we map the ContractAndTokenId to a Order. 
+        the ContractAndTokenId is the unique identifier for every order. It is made
         up of the `contract ID + DELIMITER + token ID`
+        NOTE: this should probably be more specific, like requester_id + DELIMITER + token ID
     */
-    pub sales: UnorderedMap<ContractAndTokenId, Sale>,
+    pub orders: UnorderedMap<ContractAndTokenId, Order>,
+
+    //keep track of all the Order IDs assigned to an account ID
+    pub by_assignee: LookupMap<AccountId, UnorderedSet<ContractAndTokenId>>,
+
+    //keep track of all the Order IDs requested by an account ID
+    pub by_requester: LookupMap<AccountId, UnorderedSet<ContractAndTokenId>>,
+
+    // /*
+    //     to keep track of the sales, we map the ContractAndTokenId to a Sale. 
+    //     the ContractAndTokenId is the unique identifier for every sale. It is made
+    //     up of the `contract ID + DELIMITER + token ID`
+    // */
+    // pub sales: UnorderedMap<ContractAndTokenId, Sale>,
     
-    //keep track of all the Sale IDs for every account ID
-    pub by_owner_id: LookupMap<AccountId, UnorderedSet<ContractAndTokenId>>,
+    // //keep track of all the Sale IDs for every account ID
+    // pub by_owner_id: LookupMap<AccountId, UnorderedSet<ContractAndTokenId>>,
 
     //keep track of all the token IDs for sale for a given contract
-    pub by_nft_contract_id: LookupMap<AccountId, UnorderedSet<TokenId>>,
+    // pub by_nft_contract_id: LookupMap<AccountId, UnorderedSet<TokenId>>,
 
     //keep track of the storage that accounts have payed
     pub storage_deposits: LookupMap<AccountId, Balance>,
@@ -72,6 +88,9 @@ pub struct Contract {
 /// Helper structure to for keys of the persistent collections.
 #[derive(BorshStorageKey, BorshSerialize)]
 pub enum StorageKey {
+    Orders,
+    ByAssignee,
+    ByRequester,
     Sales,
     ByOwnerId,
     ByOwnerIdInner { account_id_hash: CryptoHash },
@@ -97,9 +116,12 @@ impl Contract {
             owner_id,
 
             //Storage keys are simply the prefixes used for the collections. This helps avoid data collision
-            sales: UnorderedMap::new(StorageKey::Sales),
-            by_owner_id: LookupMap::new(StorageKey::ByOwnerId),
-            by_nft_contract_id: LookupMap::new(StorageKey::ByNFTContractId),
+            orders: UnorderedMap::new(StorageKey::Orders),
+            by_assignee: LookupMap::new(StorageKey::ByAssignee),
+            by_requester: LookupMap::new(StorageKey::ByRequester),
+            // sales: UnorderedMap::new(StorageKey::Sales),
+            // by_owner_id: LookupMap::new(StorageKey::ByOwnerId),
+            // by_nft_contract_id: LookupMap::new(StorageKey::ByNFTContractId),
             storage_deposits: LookupMap::new(StorageKey::StorageDeposits),
         };
 

@@ -46,6 +46,9 @@ pub struct Contract {
 
     //keeps track of the metadata for the contract
     pub metadata: LazyOption<NFTContractMetadata>,
+
+    // TODO:
+    // pub by_orig_owner
 }
 
 /// Helper structure for keys of the persistent collections.
@@ -74,9 +77,9 @@ impl Contract {
         Self::new(
             owner_id,
             NFTContractMetadata {
-                spec: "nft-1.0.0".to_string(),
-                name: "NFT Tutorial Contract".to_string(),
-                symbol: "GOTEAM".to_string(),
+                spec: NFT_METADATA_SPEC.to_string(),
+                name: "NEAR Frontier Common Good".to_string(),
+                symbol: "CG".to_string(),
                 icon: None,
                 base_uri: None,
                 reference: None,
