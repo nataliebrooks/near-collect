@@ -1,7 +1,8 @@
-import { gql, useQuery } from "@apollo/client";
-import React, { useMemo, useState } from "react";
-import { classNames } from "./shared/Utils";
+import React from "react";
+import { useEffect, useState, useMemo } from "react";
 import Table, { SelectColumnFilter } from "./Table";
+import { classNames } from "./shared/Utils";
+import { useQuery, gql } from "@apollo/client";
 
 const PER_PAGE_LIMIT = 10;
 
@@ -37,10 +38,10 @@ export function AvatarCell({ value, column, row }) {
   );
 }
 
-const ItemTable = ({ contract }) => {
+const OrderTable = ({ contract }) => {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
-  const { loading, error, data } = useQuery(NEW_ITEMS_QUERY);
+  const { loading, error, data } = useQuery(MY_ORDERS);
 
   const columns = useMemo(
     () => [
@@ -73,9 +74,30 @@ const ItemTable = ({ contract }) => {
     []
   );
 
+  // useEffect(() => {
+  //   let offset;
+  //   if (page < 1) {
+  //     setPage(1);
+  //     offset = 0;
+  //   } else {
+  //     offset = (page - 1) * PER_PAGE_LIMIT;
+  //   }
+
+  //   // every second after the component first mounts
+  //   // update the list of Items by invoking the get
+  //   // method on the smart contract
+  //   const id = setInterval(() => {
+  //     contract
+  //       .get({ offset, limit: PER_PAGE_LIMIT })
+  //       .then((items) => setItems(items));
+  //   }, 1000);
+
+  //   return () => clearInterval(id);
+  // }, [page, contract]);
+
   return (
     <>
-      <h1 className="text-xl font-semibold">Items</h1>
+      <h1 className="text-xl font-semibold">Orders</h1>
       <div className="mt-4">
         <Table columns={columns} data={(data && data.items) || []} />
       </div>
@@ -83,9 +105,9 @@ const ItemTable = ({ contract }) => {
   );
 };
 
-export default ItemTable;
+export default OrderTable;
 
-const NEW_ITEMS_QUERY = gql`
+const MY_ORDERS = gql`
   query {
     items(first: 5, where: { status: NEW }) {
       id

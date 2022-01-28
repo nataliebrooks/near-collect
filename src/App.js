@@ -6,7 +6,7 @@ import Big from "big.js";
 import CreateItem from "./components/CreateItem";
 import DeleteItem from "./components/DeleteItem";
 import GetItem from "./components/GetItem";
-import ItemTable from "./components/ItemTable";
+import ItemTable from "./components/ItemTable"; 
 import SignIn from "./components/SignIn";
 
 const App = ({ contract, currentUser, nearConfig, wallet }) => {

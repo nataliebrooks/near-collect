@@ -87,10 +87,13 @@ window.nearInitPromise = initContract().then(
               }
             >
               <Route path="" element={<Create />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="items" element={<Items />} />
+              <Route path="orders" element={<Orders contract={contract} />} />
+              <Route path="items" element={<Items contract={contract} />} />
             </Route>
-            <Route path="/q1" element={<Question question="What color is my underwear?" />} />
+            <Route
+              path="/q1"
+              element={<Question question="What color is my underwear?" />}
+            />
           </Routes>
         </BrowserRouter>
       </ApolloProvider>,
