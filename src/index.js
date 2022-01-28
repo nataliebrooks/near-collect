@@ -1,13 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
-import getConfig from "./config.js";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import * as nearAPI from "near-api-js";
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider
-} from "@apollo/client";
+
+// Routes //
+import App from "./App";
+import Create from "./routes/Create";
+import Orders from "./routes/Orders";
+import Items from "./routes/Items";
+import Question from "./routes/Question";
+
+// Config
+import getConfig from "./config.js";
 
 // Initializing contract
 async function initContract() {
@@ -33,7 +38,6 @@ async function initContract() {
       accountId: walletConnection.getAccountId(),
       // Gets the user's token balance
       balance: (await walletConnection.account().state()).amount,
-
     };
   }
 
@@ -69,12 +73,26 @@ window.nearInitPromise = initContract().then(
   ({ contract, currentUser, nearConfig, walletConnection }) => {
     ReactDOM.render(
       <ApolloProvider client={client}>
-        <App
-          contract={contract}
-          currentUser={currentUser}
-          nearConfig={nearConfig}
-          wallet={walletConnection}
-        />
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <App
+                  contract={contract}
+                  currentUser={currentUser}
+                  nearConfig={nearConfig}
+                  wallet={walletConnection}
+                />
+              }
+            >
+              <Route path="" element={<Create />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="items" element={<Items />} />
+            </Route>
+            <Route path="/q1" element={<Question question="What color is my underwear?" />} />
+          </Routes>
+        </BrowserRouter>
       </ApolloProvider>,
       document.getElementById("root")
     );
