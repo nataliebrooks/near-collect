@@ -6,6 +6,7 @@ import * as nearAPI from "near-api-js";
 
 // Routes //
 import App from "./App";
+import Camera from "./routes/Camera";
 import Create from "./routes/Create";
 import Orders from "./routes/Orders";
 import Items from "./routes/Items";
@@ -86,10 +87,14 @@ window.nearInitPromise = initContract().then(
                 />
               }
             >
-              <Route path="" element={<Create />} />
+              <Route path="" element={<Create contract={contract}/>} />
               <Route path="orders" element={<Orders contract={contract} />} />
               <Route path="items" element={<Items contract={contract} />} />
             </Route>
+            <Route
+              path="/camera"
+              element={<Camera />}
+            />
             <Route
               path="/q1"
               element={<Question question="What color is my underwear?" />}
