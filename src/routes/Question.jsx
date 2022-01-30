@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-export default function Question({ question }) {
+export default function Question() {
+  const location = useLocation();
+  const { image } = location.state;
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -10,6 +12,8 @@ export default function Question({ question }) {
     event.preventDefault();
 
     setLoading(true);
+
+    // Call nft_mint function, passing image and answer
     // DO SOMETHING
     setAnswer("");
     setLoading(false);
@@ -42,6 +46,6 @@ export default function Question({ question }) {
   );
 }
 
-Question.propTypes = {
-  question: PropTypes.string.isRequired,
-};
+// Question.propTypes = {
+//   image: PropTypes.string.isRequired,
+// };
