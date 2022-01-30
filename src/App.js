@@ -14,7 +14,7 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
     wallet.requestSignIn(
       {
         contractId: nearConfig.contractName,
-        methodNames: [contract.nft_mint.name, contract.new_default_meta.name],
+        methodNames: [contract.get_orders_by_requester.name],
       }, //contract requesting access
       "NEAR frontier", //optional name
       null, //optional URL to redirect to if the sign in was successful
@@ -107,8 +107,8 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
 
 App.propTypes = {
   contract: PropTypes.shape({
-    nft_mint: PropTypes.func.isRequired,
-    new_default_meta: PropTypes.func.isRequired,
+    // nft_mint: PropTypes.func.isRequired,
+    // new_default_meta: PropTypes.func.isRequired,
   }).isRequired,
   currentUser: PropTypes.shape({
     accountId: PropTypes.string.isRequired,

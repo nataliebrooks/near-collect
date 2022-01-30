@@ -38,10 +38,10 @@ export function AvatarCell({ value, column, row }) {
   );
 }
 
-const OrderTable = ({ contract }) => {
-  const [items, setItems] = useState([]);
+const OrderTable = ({ contract, currentUser }) => {
+  const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(1);
-  const { loading, error, data } = useQuery(MY_ORDERS);
+  // const { loading, error, data } = useQuery(MY_ORDERS);
 
   const columns = useMemo(
     () => [
@@ -74,32 +74,32 @@ const OrderTable = ({ contract }) => {
     []
   );
 
-  // useEffect(() => {
-  //   let offset;
-  //   if (page < 1) {
-  //     setPage(1);
-  //     offset = 0;
-  //   } else {
-  //     offset = (page - 1) * PER_PAGE_LIMIT;
-  //   }
+  useEffect(() => {
+    let offset;
+    if (page < 1) {
+      setPage(1);
+      offset = 0;
+    } else {
+      offset = (page - 1) * PER_PAGE_LIMIT;
+    }
 
-  //   // every second after the component first mounts
-  //   // update the list of Items by invoking the get
-  //   // method on the smart contract
-  //   const id = setInterval(() => {
-  //     contract
-  //       .get({ offset, limit: PER_PAGE_LIMIT })
-  //       .then((items) => setItems(items));
-  //   }, 1000);
+    // every second after the component first mounts
+    // update the list of Items by invoking the get
+    // method on the smart contract
+    const id = setInterval(() => {
+      contract
+        .get_orders_by_requester({ requester_id: currentUser.accountId, limit: PER_PAGE_LIMIT })
+        .then((orders) => setOrders(orders));
+    }, 1000);
 
-  //   return () => clearInterval(id);
-  // }, [page, contract]);
+    return () => clearInterval(id);
+  }, [page, contract]);
 
   return (
     <>
       <h1 className="text-xl font-semibold">Orders</h1>
       <div className="mt-4">
-        <Table columns={columns} data={(data && data.items) || []} />
+        <Table columns={columns} data={(orders) || []} />
       </div>
     </>
   );
