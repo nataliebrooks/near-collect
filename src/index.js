@@ -43,6 +43,7 @@ async function initContract() {
   }
 
   // Initializing our contract APIs by contract name and configuration
+  // MARKET CONTRACT
   const contract = await new nearAPI.Contract(
     // User's accountId as a string
     walletConnection.account(),
@@ -52,9 +53,9 @@ async function initContract() {
     nearConfig.contractName,
     {
       // View methods are read-only – they don't modify the state, but usually return some value
-      // viewMethods: ['get', 'getById'],
+      viewMethods: ['get_orders_by_requester'],
       // Change methods can modify the state, but you don't receive the returned value when called
-      changeMethods: ["nft_mint", "new_default_meta", "new"],
+      // changeMethods: ["nft_mint", "new_default_meta", "new"],
       // Sender is the account ID to initialize transactions.
       // getAccountId() will return empty string if user is still unauthorized
       sender: walletConnection.getAccountId(),
@@ -88,7 +89,7 @@ window.nearInitPromise = initContract().then(
               }
             >
               <Route path="" element={<Create contract={contract}/>} />
-              <Route path="orders" element={<Orders contract={contract} />} />
+              <Route path="orders" element={<Orders contract={contract} currentUser={currentUser} />} />
               <Route path="items" element={<Items contract={contract} />} />
             </Route>
             <Route
