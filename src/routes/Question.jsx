@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-export default function Question({ question }) {
+export default function Question() {
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -42,6 +42,4 @@ export default function Question({ question }) {
   );
 }
 
-Question.propTypes = {
-  question: PropTypes.string.isRequired,
-};
+Question.propTypes = {};

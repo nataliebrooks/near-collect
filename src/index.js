@@ -1,11 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import * as nearAPI from "near-api-js";
 
 // Routes //
 import App from "./App";
+import SignIn from "./routes/SignIn";
 import Camera from "./routes/Camera";
 import Create from "./routes/Create";
 import Orders from "./routes/Orders";
@@ -14,11 +21,10 @@ import Question from "./routes/Question";
 
 // Config
 import getConfig from "./config.js";
+import * as Role from "./utils/roles";
 
 // Initializing contract
 async function initContract() {
-  // get network configuration values from config.js
-  // based on the network ID we pass to getConfig()
   const nearConfig = getConfig(process.env.NEAR_ENV || "testnet");
 
   // create a keyStore for signing transactions using the user's key
@@ -35,27 +41,20 @@ async function initContract() {
   let currentUser;
   if (walletConnection.getAccountId()) {
     currentUser = {
-      // Gets the accountId as a string
       accountId: walletConnection.getAccountId(),
-      // Gets the user's token balance
       balance: (await walletConnection.account().state()).amount,
     };
   }
 
   // Initializing our contract APIs by contract name and configuration
-  // MARKET CONTRACT
   const contract = await new nearAPI.Contract(
-    // User's accountId as a string
     walletConnection.account(),
-    // accountId of the contract we will be loading
-    // NOTE: All contracts on NEAR are deployed to an account and
-    // accounts can only have one contract deployed to them.
     nearConfig.contractName,
     {
       // View methods are read-only – they don't modify the state, but usually return some value
-      viewMethods: ['get_orders_by_requester'],
+      viewMethods: ["get_orders_by_requester"],
       // Change methods can modify the state, but you don't receive the returned value when called
-      // changeMethods: ["nft_mint", "new_default_meta", "new"],
+      changeMethods: [],
       // Sender is the account ID to initialize transactions.
       // getAccountId() will return empty string if user is still unauthorized
       sender: walletConnection.getAccountId(),
@@ -78,28 +77,70 @@ window.nearInitPromise = initContract().then(
         <BrowserRouter>
           <Routes>
             <Route
-              path="/"
+              path="/login"
               element={
+                <SignIn nearConfig={nearConfig} wallet={walletConnection} />
+              }
+            />
+            <Route
+              path="/producer"
+              element={
+                <RequireAuth currentUser={currentUser}>
+                  <App
+                    contract={contract}
+                    currentUser={currentUser}
+                    nearConfig={nearConfig}
+                    wallet={walletConnection}
+                    role={Role.PRODUCER}
+                  />
+                </RequireAuth>
+              }
+            >
+              <Route
+                path=""
+                element={<Create contract={contract} role={Role.PRODUCER} />}
+              />
+              <Route
+                path="/producer/items"
+                element={<Items contract={contract} role={Role.PRODUCER} />}
+              />
+              <Route
+                path="/producer/orders"
+                element={<Orders contract={contract} role={Role.PRODUCER} />}
+              />
+            </Route>
+            <Route
+              path="/distributor"
+              element={
+                <RequireAuth currentUser={currentUser}>
                 <App
                   contract={contract}
                   currentUser={currentUser}
                   nearConfig={nearConfig}
                   wallet={walletConnection}
+                  role={Role.DISTRIBUTOR}
                 />
+                </RequireAuth>
               }
             >
-              <Route path="" element={<Create contract={contract}/>} />
-              <Route path="orders" element={<Orders contract={contract} currentUser={currentUser} />} />
-              <Route path="items" element={<Items contract={contract} />} />
+              <Route
+                path=""
+                element={<Create contract={contract} role={Role.DISTRIBUTOR} />}
+              />
+              <Route
+                path="/distributor/items"
+                element={<Items contract={contract} role={Role.DISTRIBUTOR} />}
+              />
+              <Route
+                path="/distributor/orders"
+                element={<Orders contract={contract} role={Role.DISTRIBUTOR} />}
+              />
             </Route>
-            <Route
-              path="/camera"
-              element={<Camera />}
-            />
-            <Route
-              path="/q1"
-              element={<Question question="What color is my underwear?" />}
-            />
+            {/* <Route path="organizer" element={} />
+                <Route path="warehouse" element={} />
+                <Route path="transport" element={} /> */}
+            <Route path="/camera" element={<RequireAuth currentUser={currentUser}><Camera /></RequireAuth>} />
+            <Route path="/question" element={<RequireAuth currentUser={currentUser}><Question /></RequireAuth>} />
           </Routes>
         </BrowserRouter>
       </ApolloProvider>,
@@ -107,3 +148,14 @@ window.nearInitPromise = initContract().then(
     );
   }
 );
+
+function RequireAuth({ currentUser, children }) {
+  let location = useLocation();
+
+  if (!currentUser) {
+    // Redirect to login page
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  } else {
+    return children;
+  }
+}
