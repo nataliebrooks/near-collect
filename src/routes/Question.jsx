@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-export default function Question() {
+export default function Question() {  
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const { image } = location.state;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     setLoading(true);
+
+    // Call nft_mint function, passing image and answer
     // DO SOMETHING
     setAnswer("");
     setLoading(false);
