@@ -1,16 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Camera as ReactCamera, CameraType } from "react-camera-pro";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
+import styled from 'styled-components';
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   position: fixed;
   width: 100%;
   height: 100%;
   z-index: 1;
 `;
 
-const Control = styled.div`
+export const Control = styled.div`
   position: fixed;
   display: flex;
   right: 0;
@@ -37,7 +34,7 @@ const Control = styled.div`
   }
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   outline: none;
   color: white;
   opacity: 1;
@@ -61,8 +58,8 @@ const Button = styled.button`
   }
 `;
 
-const TakePhotoButton = styled(Button)`
-  background: url("https://img.icons8.com/ios/50/000000/compact-camera.png");
+export const TakePhotoButton = styled(Button)`
+  background: url('https://img.icons8.com/ios/50/000000/compact-camera.png');
   background-position: center;
   background-size: 50px;
   background-repeat: no-repeat;
@@ -75,7 +72,7 @@ const TakePhotoButton = styled(Button)`
   }
 `;
 
-const ChangeFacingCameraButton = styled(Button)`
+export const ChangeFacingCameraButton = styled(Button)`
   background: url(https://img.icons8.com/ios/50/000000/switch-camera.png);
   background-position: center;
   background-size: 40px;
@@ -92,10 +89,10 @@ const ChangeFacingCameraButton = styled(Button)`
   }
 `;
 
-const ImagePreview = styled.div`
+export const ImagePreview = styled.div`
   width: 120px;
   height: 120px;
-  ${({ image }) => (image ? `background-image:  url(${image});` : "")}
+  ${({ image }) => (image ? `background-image:  url(${image});` : '')}
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -104,42 +101,3 @@ const ImagePreview = styled.div`
     height: 120px;
   }
 `;
-
-const Camera = () => {
-  const [numberOfCameras, setNumberOfCameras] = useState(0);
-  const [image, setImage] = useState(null);
-  const camera = useRef(null);
-  return (
-    <Wrapper>
-      <ReactCamera
-        ref={camera}
-        aspectRatio="cover"
-        numberOfCamerasCallback={setNumberOfCameras}
-      />
-      <Control>
-        <Link to="/question" state={{ image: image }}>
-          <ImagePreview image={image} />
-        </Link>
-        <TakePhotoButton
-          onClick={() => {
-            if (camera.current) {
-              const photo = camera.current.takePhoto();
-              setImage(photo);
-            }
-          }}
-        />
-        {numberOfCameras > 1 ? (
-          <ChangeFacingCameraButton
-            onClick={() => {
-              if (camera.current) {
-                const result = camera.current.switchCamera();
-              }
-            }}
-          />
-        ) : null}
-      </Control>
-    </Wrapper>
-  );
-};
-
-export default Camera;

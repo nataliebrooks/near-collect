@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-export default function Question({ question }) {
+export default function Question({ contract, currentUser }) {
   const [answer, setAnswer] = useState("");
-  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  let image;
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    setLoading(true);
-    // DO SOMETHING
-    setAnswer("");
-    setLoading(false);
-  };
+  if (location && location.state) {
+    image = location.state.image;
+  }
 
   return (
     <main className="flex flex-col justify-between h-screen w-full p-8">
@@ -21,27 +17,21 @@ export default function Question({ question }) {
         <Link to="/">Back</Link>
       </header>
       <section className="flex-1 grid content-center">
-        <form onSubmit={handleSubmit}>
-          <h2>What was in that picture? What things? And how many of them?</h2>
-          <input
-            className="appearance-none block bg-slate-200 text-slate-700 pxborder rounded leading-tight focus:outline-none focus:bg-white"
-            id={"input_"} // This could be dynamic, question underscored
-            type="text"
-            placeholder=""
-            value={answer}
-            onChange={({ target }) => setAnswer(target.value)}
-          /> 
-          <button 
-          disabled={loading || answer === "" || answer == null} // is null or empty check
-          > 
-              Next
-            </button>
-        </form>
+        <h2>What was in that picture? What things? And how many of them?</h2>
+        <input
+          className="appearance-none block bg-slate-200 text-slate-700 pxborder rounded leading-tight focus:outline-none focus:bg-white"
+          id={"input_"} // This could be dynamic, question underscored
+          type="text"
+          placeholder=""
+          value={answer}
+          onChange={({ target }) => setAnswer(target.value)}
+        />
+        <Link to="/submit" state={{ image, answer }}>
+          Next
+        </Link>
       </section>
     </main>
   );
 }
 
-Question.propTypes = {
-  question: PropTypes.string.isRequired,
-};
+Question.propTypes = {};
