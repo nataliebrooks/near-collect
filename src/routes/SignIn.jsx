@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
-export default function SignIn({ nearConfig, wallet }) {
+export default function SignIn({ contract, nearConfig, wallet }) {
   let navigate = useNavigate();
   let location = useLocation();
 

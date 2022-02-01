@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Camera as ReactCamera, CameraType } from "react-camera-pro";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -109,7 +109,6 @@ const Camera = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState(null);
   const camera = useRef(null);
-
   return (
     <Wrapper>
       <ReactCamera
@@ -118,7 +117,7 @@ const Camera = () => {
         numberOfCamerasCallback={setNumberOfCameras}
       />
       <Control>
-        <Link to="/q1" state={{ image: image }}>
+        <Link to="/question" state={{ image: image }}>
           <ImagePreview image={image} />
         </Link>
         <TakePhotoButton
@@ -126,7 +125,6 @@ const Camera = () => {
             if (camera.current) {
               const photo = camera.current.takePhoto();
               setImage(photo);
-              //
             }
           }}
         />

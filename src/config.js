@@ -1,4 +1,4 @@
-const CONTRACT_NAME = process.env.CONTRACT_NAME || 'dev-1642729296843-63006114973695';
+const CONTRACT_NAME = process.env.CONTRACT_NAME || 'common-good.frontier.test.near';
 
 function getConfig(env) {
   switch(env) {
@@ -33,9 +33,9 @@ function getConfig(env) {
     case 'local':
       return {
         networkId: 'local',
-        nodeUrl: 'http://127.0.0.1:50272',
-        keyPath: '/Users/ebraem/.neartosis/2022-01-17T13.15.55/validator-key.json',
-        walletUrl: 'http://127.0.0.1:50292',
+        nodeUrl: 'http://127.0.0.1:57583',
+        keyPath: '/Users/ebraem/.neartosis/2022-01-31T17.52.46/validator-key.json',
+        walletUrl: 'http://127.0.0.1:57631',
         contractName: CONTRACT_NAME
       };
     case 'test':

@@ -1,5 +1,5 @@
-export const PRODUCER = Symbol("PRODUCER")
-export const DISTRIBUTOR = Symbol("DISTRIBUTOR")
-export const ORGANIZER = Symbol("ORGANIZER")
-export const WAREHOUSE = Symbol("WAREHOUSE")
-export const TRANSPORT = Symbol("TRANSPORT")
+export const PRODUCER = "PRODUCER"
+export const DISTRIBUTOR = "DISTRIBUTOR"
+export const ORGANIZER = "ORGANIZER"
+export const WAREHOUSE = "WAREHOUSE"
+export const TRANSPORT = "TRANSPORT"

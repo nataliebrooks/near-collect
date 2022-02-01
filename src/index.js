@@ -18,6 +18,7 @@ import Create from "./routes/Create";
 import Orders from "./routes/Orders";
 import Items from "./routes/Items";
 import Question from "./routes/Question";
+import Submit from "./routes/Submit";
 
 // Config
 import getConfig from "./config.js";
@@ -54,7 +55,7 @@ async function initContract() {
       // View methods are read-only – they don't modify the state, but usually return some value
       viewMethods: ["get_orders_by_requester"],
       // Change methods can modify the state, but you don't receive the returned value when called
-      changeMethods: [],
+      changeMethods: ["nft_mint"],
       // Sender is the account ID to initialize transactions.
       // getAccountId() will return empty string if user is still unauthorized
       sender: walletConnection.getAccountId(),
@@ -79,7 +80,11 @@ window.nearInitPromise = initContract().then(
             <Route
               path="/login"
               element={
-                <SignIn nearConfig={nearConfig} wallet={walletConnection} />
+                <SignIn
+                  contract={contract}
+                  nearConfig={nearConfig}
+                  wallet={walletConnection}
+                />
               }
             />
             <Route
@@ -113,13 +118,13 @@ window.nearInitPromise = initContract().then(
               path="/distributor"
               element={
                 <RequireAuth currentUser={currentUser}>
-                <App
-                  contract={contract}
-                  currentUser={currentUser}
-                  nearConfig={nearConfig}
-                  wallet={walletConnection}
-                  role={Role.DISTRIBUTOR}
-                />
+                  <App
+                    contract={contract}
+                    currentUser={currentUser}
+                    nearConfig={nearConfig}
+                    wallet={walletConnection}
+                    role={Role.DISTRIBUTOR}
+                  />
                 </RequireAuth>
               }
             >
@@ -139,8 +144,30 @@ window.nearInitPromise = initContract().then(
             {/* <Route path="organizer" element={} />
                 <Route path="warehouse" element={} />
                 <Route path="transport" element={} /> */}
-            <Route path="/camera" element={<RequireAuth currentUser={currentUser}><Camera /></RequireAuth>} />
-            <Route path="/question" element={<RequireAuth currentUser={currentUser}><Question /></RequireAuth>} />
+            <Route
+              path="/camera"
+              element={
+                <RequireAuth currentUser={currentUser}>
+                  <Camera />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/question"
+              element={
+                <RequireAuth currentUser={currentUser}>
+                  <Question contract={contract} currentUser={currentUser} />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/submit"
+              element={
+                <RequireAuth currentUser={currentUser}>
+                  <Submit contract={contract} currentUser={currentUser} />
+                </RequireAuth>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </ApolloProvider>,
