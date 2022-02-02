@@ -8,30 +8,32 @@ use crate::*;
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Order {
-    pub requester_id: AccountId, // Person B, requesting Person A's item
-    // pub owner_id: AccountId, // Person A, holding the item
-    // pub assignee: AccountId, // may be overkill, but person assigned to the order
+    pub requester_id: AccountId,   // Person B, requesting Person A's item
+    pub token_owner_id: AccountId, // Person A, holding the item
     // pub nft_contract_id: String, // nft contract where token was minted... common-good
-    pub token_id: String,     // token Id of Person A's item
-    pub status: String,       // lifecycle status
+    pub token_id: String, // token Id of Person A's item
+    // pub status: String,       // lifecycle status
     pub instructions: String, // instructions on how to deliver
 }
 
 #[near_bindgen]
 impl Contract {
     #[payable]
-    pub fn create_order(&mut self, requester_id: AccountId, token_id: String) -> Order {
+    pub fn create_order(
+        &mut self,
+        requester_id: AccountId,
+        owner_id: AccountId,
+        token_id: String,
+    ) -> Order {
         //assert that the user has attached exactly 1 yoctoNEAR (for security reasons)
-        // assert_one_yocto();
+        assert_one_yocto();
 
         let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
 
         let order = Order {
             requester_id: requester_id.clone(),
-            // owner_id: How can I grab the owner of the token
-            // assignee: owner_id
+            token_owner_id: owner_id.clone(),
             token_id: token_id,
-            status: "NEW".to_string(),
             instructions: "email me".to_string(),
         };
 
@@ -59,6 +61,22 @@ impl Contract {
         by_requester_set.insert(&requester_and_token_id);
         //insert that set back into the collection for the owner
         self.by_requester.insert(&requester_id, &by_requester_set);
+
+        //get the orders by requester ID for the given requester. If there are none, we create a new empty set
+        let mut by_assignee_set = self.by_assignee.get(&owner_id).unwrap_or_else(|| {
+            UnorderedSet::new(
+                StorageKey::ByRequesterInner {
+                    //we get a new unique prefix for the collection by hashing the owner
+                    account_id_hash: hash_account_id(&owner_id),
+                }
+                .try_to_vec()
+                .unwrap(),
+            )
+        });
+        //insert the unique sale ID into the set
+        by_assignee_set.insert(&requester_and_token_id);
+        //insert that set back into the collection for the owner
+        self.by_assignee.insert(&owner_id, &by_assignee_set);
         order
     }
 

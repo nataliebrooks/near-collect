@@ -1,12 +1,13 @@
 type Item @entity {
   id: ID!
-  signerId: String!  
+  signerId: String! // original creator
+  rootId: String!
   status: Status!
   title: String
   description: String
   image: String # TODO
   category: Category!
-  labels: [Label!]
+  labels: [Label!]\
   log: [Log!]! # item history
 }
 
