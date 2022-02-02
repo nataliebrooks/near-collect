@@ -36,11 +36,11 @@ export function AvatarCell({ value }) {
 // This can be moved to Shared Button
 export 
 
-const ItemTable = ({ contract, wallet, currentUser }) => {
+const ItemTable = ({ contract, wallet, currentUser, role }) => {
   const [items, setItems] = useState([]);
   const [order, setOrder] = useState(null);
   const [page, setPage] = useState(1);
-  const { loading, error, data } = useQuery(NEW_ITEMS_QUERY);
+  // const { loading, error, data } = useQuery(NEW_ITEMS_QUERY);
 
   async function createOrder(itemId, signerId) {
     const order = await wallet.account().functionCall({
@@ -64,17 +64,17 @@ const ItemTable = ({ contract, wallet, currentUser }) => {
         {/* <div className="flex-shrink-0 h-10 w-10">
           <img className="h-10 w-10 rounded-full" src={row.original[column.imgAccessor]} alt="" />
         </div> */}
+        { role === "DISTRIBUTOR" ?
         <div className="ml-4">
           <div className="text-sm font-medium text-gray-900">
             <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => createOrder(itemId, signerId)}>
               Order
             </button>
           </div>
-        </div>
+        </div> : null }
       </div>
     );
   }
-  
 
   const columns = useMemo(
     () => [
@@ -95,6 +95,31 @@ const ItemTable = ({ contract, wallet, currentUser }) => {
     []
   );
 
+  const data = { 
+    items: [
+      {
+        id: "1",
+        signerId: "efiz.test.near",
+      },
+      {
+        id: "2",
+        signerId: "efiz.test.near",
+      },
+      {
+        id: "3",
+        signerId: "efiz.test.near",
+      },
+      {
+        id: "4",
+        signerId: "efiz.test.near",
+      },
+      {
+        id: "5",
+        signerId: "efiz.test.near",
+      }
+    ]
+  }
+
   // should remove items that order already exists for
   return (
     <>
@@ -110,14 +135,14 @@ const ItemTable = ({ contract, wallet, currentUser }) => {
 export default ItemTable;
 
 // May want to move this out, into Items route as data will change depending on role
-const NEW_ITEMS_QUERY = gql`
-  query {
-    items(first: 5, where: { status: NEW }) {
-      id
-      signerId
-      status
-      category
-      labels
-    }
-  }
-`;
+// const NEW_ITEMS_QUERY = gql`
+//   query {
+//     items(first: 5, where: { status: NEW }) {
+//       id
+//       signerId
+//       status
+//       category
+//       labels
+//     }
+//   }
+// `;
