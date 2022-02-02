@@ -12,7 +12,7 @@ pub struct Order {
     pub token_owner_id: AccountId, // Person A, holding the item
     // pub nft_contract_id: String, // nft contract where token was minted... common-good
     pub token_id: String, // token Id of Person A's item
-    // pub status: String,       // lifecycle status
+    pub status: String,       // lifecycle status
     pub instructions: String, // instructions on how to deliver
 }
 
@@ -34,6 +34,7 @@ impl Contract {
             requester_id: requester_id.clone(),
             token_owner_id: owner_id.clone(),
             token_id: token_id,
+            status: "NEW".to_string(),
             instructions: "email me".to_string(),
         };
 
@@ -80,45 +81,48 @@ impl Contract {
         order
     }
 
-    // #[payable]
-    // pub fn accept_order(&mut self, requester_id: AccountId, token_id: String) -> String {
-    //     let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
+    #[payable]
+    pub fn accept_order(&mut self, requester_id: AccountId, token_id: String) -> String {
+        let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
 
-    //     let mut order = self
-    //         .orders
-    //         .get(&requester_and_token_id)
-    //         .expect("No order for token from requester");
-    //     order.status = "IN_REQUEST".to_string();
-    //     self.orders.set(&requester_and_token_id, &order);
-    //     return order.msg;
-    // }
+        let mut order = self
+            .orders
+            .get(&requester_and_token_id)
+            .expect("No order for token from requester");
+        // TODO : Check that call was from "owner_id" and in new state
+        order.status = "ACCEPTED".to_string();
+        self.orders.insert(&requester_and_token_id, &order);
+        // DO SOMETHING?
+        return order.instructions;
+    }
 
-    // #[payable]
-    // pub fn execute_order(&mut self, requester_id: AccountId, token_id: String) {
-    //     let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
+    #[payable]
+    pub fn execute_order(&mut self, requester_id: AccountId, token_id: String) {
+        let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
 
-    //     let mut order = self
-    //         .orders
-    //         .get(&requester_and_token_id)
-    //         .expect("No order for token from requester");
-    //     order.status = "IN_TRANSIT".to_string();
-    //     order.assignee = order.requester_id;
-    //     self.orders.set(&requester_and_token_id, &order);
-    //     // SEND TOKEN TO COMMON GOOD
-    // }
+        let mut order = self
+            .orders
+            .get(&requester_and_token_id)
+            .expect("No order for token from requester");
+        // TODO : Check that call was from "owner_id" and in ACCEPTED state
+        order.status = "IN_TRANSIT".to_string();
+        self.orders.insert(&requester_and_token_id, &order);
+        // SEND TOKEN TO COMMON GOOD
+    }
 
-    // #[payable]
-    // pub fn complete_order(&mut self, requester_id: AccountId, token_id: String) {
-    //     let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
+    #[payable]
+    pub fn complete_order(&mut self, requester_id: AccountId, token_id: String) {
+        let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
 
-    //     let mut order = self
-    //         .orders
-    //         .get(&requester_and_token_id)
-    //         .expect("No order for token from requester");
-    //     order.status = "COMPLETED".to_string();
-    //     self.orders.set(&requester_and_token_id, &order);
-    //     // UPDATE TOKEN OWNERSHIP TO REQUESTER
-    // }
+        let mut order = self
+            .orders
+            .get(&requester_and_token_id)
+            .expect("No order for token from requester");
+        order.status = "COMPLETED".to_string();
+        // TODO : Check that call was from "requester_id" and in IN_TRANSIT state
+        self.orders.insert(&requester_and_token_id, &order);
+        // UPDATE TOKEN OWNERSHIP TO REQUESTER
+    }
 
     // //removes a order from the market.
     // #[payable]

@@ -17,6 +17,8 @@ export class Item extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("signerId", Value.fromString(""));
+    this.set("rootId", Value.fromString(""));
+    this.set("parentId", Value.fromString(""));
     this.set("status", Value.fromString(""));
     this.set("category", Value.fromString(""));
     this.set("log", Value.fromStringArray(new Array(0)));
@@ -55,6 +57,24 @@ export class Item extends Entity {
 
   set signerId(value: string) {
     this.set("signerId", Value.fromString(value));
+  }
+
+  get rootId(): string {
+    let value = this.get("rootId");
+    return value!.toString();
+  }
+
+  set rootId(value: string) {
+    this.set("rootId", Value.fromString(value));
+  }
+
+  get parentId(): string {
+    let value = this.get("parentId");
+    return value!.toString();
+  }
+
+  set parentId(value: string) {
+    this.set("parentId", Value.fromString(value));
   }
 
   get status(): string {
@@ -100,8 +120,8 @@ export class Item extends Entity {
     }
   }
 
-  get image(): string | null {
-    let value = this.get("image");
+  get media(): string | null {
+    let value = this.get("media");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -109,11 +129,11 @@ export class Item extends Entity {
     }
   }
 
-  set image(value: string | null) {
+  set media(value: string | null) {
     if (!value) {
-      this.unset("image");
+      this.unset("media");
     } else {
-      this.set("image", Value.fromString(<string>value));
+      this.set("media", Value.fromString(<string>value));
     }
   }
 
@@ -126,8 +146,8 @@ export class Item extends Entity {
     this.set("category", Value.fromString(value));
   }
 
-  get labels(): Array<string> | null {
-    let value = this.get("labels");
+  get label(): Array<string> | null {
+    let value = this.get("label");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -135,11 +155,11 @@ export class Item extends Entity {
     }
   }
 
-  set labels(value: Array<string> | null) {
+  set label(value: Array<string> | null) {
     if (!value) {
-      this.unset("labels");
+      this.unset("label");
     } else {
-      this.set("labels", Value.fromStringArray(<Array<string>>value));
+      this.set("label", Value.fromStringArray(<Array<string>>value));
     }
   }
 
@@ -160,7 +180,6 @@ export class Log extends Entity {
 
     this.set("tokenId", Value.fromString(""));
     this.set("receiverId", Value.fromString(""));
-    this.set("status", Value.fromString(""));
   }
 
   save(): void {
@@ -205,6 +224,71 @@ export class Log extends Entity {
 
   set receiverId(value: string) {
     this.set("receiverId", Value.fromString(value));
+  }
+}
+
+export class Order extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("requesterId", Value.fromString(""));
+    this.set("requesteeId", Value.fromString(""));
+    this.set("item", Value.fromString(""));
+    this.set("status", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Order entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Order entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Order", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Order | null {
+    return changetype<Order | null>(store.get("Order", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get requesterId(): string {
+    let value = this.get("requesterId");
+    return value!.toString();
+  }
+
+  set requesterId(value: string) {
+    this.set("requesterId", Value.fromString(value));
+  }
+
+  get requesteeId(): string {
+    let value = this.get("requesteeId");
+    return value!.toString();
+  }
+
+  set requesteeId(value: string) {
+    this.set("requesteeId", Value.fromString(value));
+  }
+
+  get item(): string {
+    let value = this.get("item");
+    return value!.toString();
+  }
+
+  set item(value: string) {
+    this.set("item", Value.fromString(value));
   }
 
   get status(): string {
