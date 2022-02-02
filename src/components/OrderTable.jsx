@@ -38,7 +38,7 @@ export function AvatarCell({ value, column, row }) {
   );
 }
 
-const OrderTable = ({ contract, currentUser }) => {
+const OrderTable = ({ contract, wallet, currentUser }) => {
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(1);
   // const { loading, error, data } = useQuery(MY_ORDERS);
@@ -74,31 +74,36 @@ const OrderTable = ({ contract, currentUser }) => {
     []
   );
 
-  useEffect(() => {
-    let offset;
-    if (page < 1) {
-      setPage(1);
-      offset = 0;
-    } else {
-      offset = (page - 1) * PER_PAGE_LIMIT;
-    }
+  async function loadOrders() {
+    const orders = await wallet.account().viewFunction(
+      'order-book.frontier.test.near',
+      'get_orders_by_requester',
+      { requester_id: currentUser.accountId, limit: PER_PAGE_LIMIT }
+    );
+    setOrders(orders);
+  }
 
-    // every second after the component first mounts
-    // update the list of Items by invoking the get
-    // method on the smart contract
-    const id = setInterval(() => {
-      contract
-        .get_orders_by_requester({ requester_id: currentUser.accountId, limit: PER_PAGE_LIMIT })
-        .then((orders) => setOrders(orders));
-    }, 1000);
+  // useEffect(() => {
+  //   let offset;
+  //   if (page < 1) {
+  //     setPage(1);
+  //     offset = 0;
+  //   } else {
+  //     offset = (page - 1) * PER_PAGE_LIMIT;
+  //   }
+  //   // // method on the smart contract
+  //   // const id = setInterval(() => {
+      
+  //   // }, 1000);
 
-    return () => clearInterval(id);
-  }, [page, contract]);
+  //   // return () => clearInterval(id);
+  // }, [page]);
 
   return (
     <>
       <h1 className="text-xl font-semibold">Orders</h1>
       <div className="mt-4">
+        <button onClick={loadOrders}>Refresh</button>
         <Table columns={columns} data={(orders) || []} />
       </div>
     </>

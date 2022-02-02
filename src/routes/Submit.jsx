@@ -16,6 +16,8 @@ export default function Submit({ contract, currentUser }) {
     event.preventDefault();
 
     setLoading(true);
+    // Need to upload image  to IPFS and pass URL
+    // https://blog.logrocket.com/decentralized-data-storage-using-ipfs-and-react-a-tutorial-with-examples/#how-to-build-a-frontend-dapp-with-ipfs-and-react
 
     const item = await contract.nft_mint(
       {
