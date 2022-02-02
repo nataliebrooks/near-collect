@@ -65,6 +65,8 @@ pub struct Contract {
     //keep track of all the Order IDs requested by an account ID
     pub by_requester: LookupMap<AccountId, UnorderedSet<RequesterAndTokenId>>,
 
+    pub by_assignee: LookupMap<AccountId, UnorderedSet<RequesterAndTokenId>>,
+
     // /*
     //     to keep track of the sales, we map the ContractAndTokenId to a Sale. 
     //     the ContractAndTokenId is the unique identifier for every sale. It is made
@@ -88,6 +90,8 @@ pub enum StorageKey {
     Orders,
     ByRequester,
     ByRequesterInner { account_id_hash: CryptoHash },
+    ByAssignee,
+    ByAssigneeInner { account_id_hash: CryptoHash },
     // Sales,
     // ByOwnerId,
     // ByOwnerIdInner { account_id_hash: CryptoHash },
@@ -115,6 +119,7 @@ impl Contract {
             //Storage keys are simply the prefixes used for the collections. This helps avoid data collision
             orders: UnorderedMap::new(StorageKey::Orders),
             by_requester: LookupMap::new(StorageKey::ByRequester),
+            by_assignee: LookupMap::new(StorageKey::ByAssignee),
             // sales: UnorderedMap::new(StorageKey::Sales),
             // by_owner_id: LookupMap::new(StorageKey::ByOwnerId),
             // by_nft_contract_id: LookupMap::new(StorageKey::ByNFTContractId),

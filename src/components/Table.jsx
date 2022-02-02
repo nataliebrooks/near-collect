@@ -73,6 +73,7 @@ export function SelectColumnFilter({
   )
 }
 
+// This needs to be a scrollable table
 function Table({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
   const {
