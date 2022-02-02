@@ -40,7 +40,7 @@ const App = ({ contract, currentUser, nearConfig, wallet, role }) => {
           <div className="flex justify-between text-center">
             <div className="flex-1 border-r border-slate-300/10">
               <Link
-                to="/orders"
+                to="orders"
                 className="text-2xl font-extrabold text-slate-200"
               >
                 Orders

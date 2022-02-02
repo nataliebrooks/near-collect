@@ -2,7 +2,6 @@ import React from "react";
 import { useEffect, useState, useMemo } from "react";
 import Table, { SelectColumnFilter } from "./Table";
 import { classNames } from "./shared/Utils";
-import { useQuery, gql } from "@apollo/client";
 
 const PER_PAGE_LIMIT = 10;
 
@@ -38,7 +37,7 @@ export function AvatarCell({ value, column, row }) {
   );
 }
 
-const OrderTable = ({ contract, wallet, currentUser }) => {
+const OrderTable = ({ contract, wallet, currentUser, role }) => {
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(1);
   // const { loading, error, data } = useQuery(MY_ORDERS);
@@ -74,12 +73,27 @@ const OrderTable = ({ contract, wallet, currentUser }) => {
     []
   );
 
+  // Remove button, move to useEffect
   async function loadOrders() {
-    const orders = await wallet.account().viewFunction(
-      'order-book.frontier.test.near',
-      'get_orders_by_requester',
-      { requester_id: currentUser.accountId, limit: PER_PAGE_LIMIT }
-    );
+    let orders;
+    switch (role) {
+      case 'PRODUCER':
+        orders = await wallet.account().viewFunction(
+          'order-book.frontier.test.near', // enum this
+          'get_orders_by_assignee', // enum this?
+          { assignee_id: currentUser.accountId, limit: PER_PAGE_LIMIT } // page limit tracks table
+        );
+        break;
+      case 'DISTRIBUTOR':
+        orders = await wallet.account().viewFunction(
+          'order-book.frontier.test.near', // enum this
+          'get_orders_by_requester', // enum this?
+          { requester_id: currentUser.accountId, limit: PER_PAGE_LIMIT } // page limit tracks table
+        );
+        break;
+      default:
+        orders = []
+    }
     setOrders(orders);
   }
 
@@ -111,15 +125,3 @@ const OrderTable = ({ contract, wallet, currentUser }) => {
 };
 
 export default OrderTable;
-
-const MY_ORDERS = gql`
-  query {
-    items(first: 5, where: { status: NEW }) {
-      id
-      signerId
-      status
-      category
-      labels
-    }
-  }
-`;

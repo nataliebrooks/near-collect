@@ -111,7 +111,7 @@ window.nearInitPromise = initContract().then(
               />
               <Route
                 path="/producer/orders"
-                element={<Orders contract={contract} role={Role.PRODUCER} />}
+                element={<Orders contract={contract} wallet={walletConnection} currentUser={currentUser} role={Role.PRODUCER} />}
               />
             </Route>
             <Route

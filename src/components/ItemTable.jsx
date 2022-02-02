@@ -95,6 +95,7 @@ const ItemTable = ({ contract, wallet, currentUser }) => {
     []
   );
 
+  // should remove items that order already exists for
   return (
     <>
       <h1 className="text-xl font-semibold">Items</h1>
