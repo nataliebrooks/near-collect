@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } from 'react-table'
 import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid'
-import { Button, PageButton } from './shared/Button'
-import { classNames } from './shared/Utils'
-import { SortIcon, SortUpIcon, SortDownIcon } from './shared/Icons'
+import { Button, PageButton } from './Button'
+import { classNames } from './utils'
+import { SortIcon, SortUpIcon, SortDownIcon } from './Icons'
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -73,6 +73,7 @@ export function SelectColumnFilter({
   )
 }
 
+// This needs to be a scrollable table
 function Table({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
   const {
@@ -125,8 +126,8 @@ function Table({ columns, data }) {
       {/* Table */}
       <div className="mt-4 flex flex-col">
         <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <div className="pt-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow border-b border-gray-200">
               <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   {headerGroups.map(headerGroup => (
@@ -188,10 +189,10 @@ function Table({ columns, data }) {
       </div>
       {/* Pagination */}
       <div className="py-3 flex items-center justify-between">
-        <div className="flex-1 flex justify-between sm:hidden">
+        {/* <div className="flex-1 flex justify-between sm:hidden">
           <Button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</Button>
           <Button onClick={() => nextPage()} disabled={!canNextPage}>Next</Button>
-        </div>
+        </div> */}
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div className="flex gap-x-2 items-baseline">
             <span className="text-sm">
@@ -215,7 +216,7 @@ function Table({ columns, data }) {
             </label>
           </div>
           <div>
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            {/* <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
               <PageButton
                 className="rounded-l-md"
                 onClick={() => gotoPage(0)}
@@ -246,7 +247,7 @@ function Table({ columns, data }) {
                 <span className="sr-only">Last</span>
                 <ChevronDoubleRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </PageButton>
-            </nav>
+            </nav> */}
           </div>
         </div>
       </div>

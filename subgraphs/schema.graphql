@@ -1,20 +1,29 @@
 type Item @entity {
   id: ID!
-  signerId: String!  
-  status: Status!
+  signerId: String!
+  rootId: String!
+  parentId: String!
+  status: ItemStatus!
   title: String
   description: String
-  image: String # TODO
+  media: String
   category: Category!
-  labels: [Label!]
-  log: [Log!]! # item history
+  label: [Label!]
+  log: [Log!]!
 }
 
 type Log @entity {
   id: ID!
   tokenId: String!
   receiverId: String!
-  status: String!
+}
+
+type Order @entity {
+  id: ID!
+  requesterId: String!
+  requesteeId: String!
+  item: Item!
+  status: OrderStatus!
 }
 
 
@@ -22,7 +31,11 @@ type Log @entity {
 # Enums ---------------------------------------------------
 # ---------------------------------------------------------
 
-enum Status @entity {
+enum ItemStatus @entity {
+  NEW
+}
+
+enum OrderStatus @entity {
   NEW
 }
 

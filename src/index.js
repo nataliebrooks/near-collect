@@ -13,16 +13,25 @@ import * as nearAPI from "near-api-js";
 // Routes //
 import App from "./App";
 import SignIn from "./routes/SignIn";
+import Start from "./routes/Start";
+import ProducerApp from "./routes/ProducerApp";
+import DistributorApp from "./routes/DistributorApp";
+import OrganizerApp from "./routes/OrganizerApp";
+import TransporterApp from "./routes/TransporterApp";
+import VendorApp from "./routes/VendorApp";
+import WarehouseApp from "./routes/WarehouseApp";
 import Camera from "./routes/Camera";
-import Create from "./routes/Create";
-import Orders from "./routes/Orders";
-import Items from "./routes/Items";
 import Question from "./routes/Question";
 import Submit from "./routes/Submit";
+import Items from "./routes/Items";
+import Orders from "./routes/Orders";
+import NotFound from "./routes/NotFound";
 
 // Config
 import getConfig from "./config.js";
 import * as Role from "./utils/roles";
+import DistributorDashboard from "./routes/DistributorDashboard";
+import ProducerDashboard from "./routes/ProducerDashboard";
 
 // Initializing contract
 async function initContract() {
@@ -53,7 +62,7 @@ async function initContract() {
     nearConfig.contractName,
     {
       // View methods are read-only – they don't modify the state, but usually return some value
-      viewMethods: ["get_orders_by_requester"],
+      viewMethods: [""],
       // Change methods can modify the state, but you don't receive the returned value when called
       changeMethods: ["nft_mint"],
       // Sender is the account ID to initialize transactions.
@@ -88,86 +97,38 @@ window.nearInitPromise = initContract().then(
               }
             />
             <Route
-              path="/producer"
+              path="/"
               element={
                 <RequireAuth currentUser={currentUser}>
-                  <App
-                    contract={contract}
-                    currentUser={currentUser}
-                    nearConfig={nearConfig}
-                    wallet={walletConnection}
-                    role={Role.PRODUCER}
-                  />
+                  <App currentUser={currentUser} wallet={walletConnection} />
                 </RequireAuth>
               }
             >
-              <Route
-                path=""
-                element={<Create contract={contract} role={Role.PRODUCER} />}
-              />
-              <Route
-                path="/producer/items"
-                element={<Items contract={contract} role={Role.PRODUCER} />}
-              />
-              <Route
-                path="/producer/orders"
-                element={<Orders contract={contract} role={Role.PRODUCER} />}
-              />
+              <Route index element={<Start />} />
+              <Route path="producer" element={<ProducerApp />}>
+                <Route index element={<ProducerDashboard />} />
+                <Route path="items" element={<Items />} />
+                <Route path="orders" element={<Orders />} />
+              </Route>
+              <Route path="distributor" element={<DistributorApp />}>
+                <Route index element={<DistributorDashboard />} />
+                <Route path="items" element={<Items />} />
+                <Route path="orders" element={<Orders />} />
+              </Route>
+              <Route path="organizer" element={<OrganizerApp />} />
+              <Route path="transporter" element={<TransporterApp />} />
+              <Route path="vendor" element={<VendorApp />} />
+              <Route path="warehouse" element={<WarehouseApp />} />
+              <Route path="camera" element={<Camera />} />
+              <Route path="question" element={<Question />} />
+              <Route path="submit" element={<Submit contract={contract} currentUser={currentUser} />} />
+              <Route path="items" element={<Items />} />
+              <Route path="orders" element={<Orders />} />
+              {/* <Route path="item" element={<Item />} />
+              <Route path="order" element={<Order />} />
+              <Route path="table" element={<Table />} /> */}
+              <Route path="*" element={<NotFound />} />
             </Route>
-            <Route
-              path="/distributor"
-              element={
-                <RequireAuth currentUser={currentUser}>
-                  <App
-                    contract={contract}
-                    currentUser={currentUser}
-                    nearConfig={nearConfig}
-                    wallet={walletConnection}
-                    role={Role.DISTRIBUTOR}
-                  />
-                </RequireAuth>
-              }
-            >
-              <Route
-                path=""
-                element={<Create contract={contract} role={Role.DISTRIBUTOR} />}
-              />
-              <Route
-                path="/distributor/items"
-                element={<Items contract={contract} role={Role.DISTRIBUTOR} />}
-              />
-              <Route
-                path="/distributor/orders"
-                element={<Orders contract={contract} role={Role.DISTRIBUTOR} />}
-              />
-            </Route>
-            {/* <Route path="organizer" element={} />
-                <Route path="warehouse" element={} />
-                <Route path="transport" element={} /> */}
-            <Route
-              path="/camera"
-              element={
-                <RequireAuth currentUser={currentUser}>
-                  <Camera />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/question"
-              element={
-                <RequireAuth currentUser={currentUser}>
-                  <Question contract={contract} currentUser={currentUser} />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/submit"
-              element={
-                <RequireAuth currentUser={currentUser}>
-                  <Submit contract={contract} currentUser={currentUser} />
-                </RequireAuth>
-              }
-            />
           </Routes>
         </BrowserRouter>
       </ApolloProvider>,

@@ -5,11 +5,10 @@ impl Contract {
     #[payable]
     pub fn nft_mint(
         &mut self,
-        token_id: TokenId,
+        token_id: TokenId, // for Producers, this should be AccountId + Timestamp?, for Distributors, this should be Account Id + Original + Timestamp?
         metadata: TokenMetadata,
         receiver_id: AccountId,
-        //we add an optional parameter for perpetual royalties
-        perpetual_royalties: Option<HashMap<AccountId, u32>>,
+        perpetual_royalties: Option<HashMap<AccountId, u32>>
     ) {
         //measure the initial storage being used on the contract
         let initial_storage_usage = env::storage_usage();
@@ -28,9 +27,7 @@ impl Contract {
             }
         }
 
-        //specify the token struct that contains the owner ID 
         let token = Token {
-            //set the owner ID equal to the receiver ID passed into the function
             owner_id: receiver_id,
             //we set the approved account IDs to the default value (an empty map)
             approved_account_ids: Default::default(),
@@ -40,19 +37,18 @@ impl Contract {
             royalty,
         };
 
-        //insert the token ID and token struct and make sure that the token doesn't exist
         assert!(
             self.tokens_by_id.insert(&token_id, &token).is_none(),
             "Token already exists"
         );
 
-        //insert the token ID and metadata
         self.token_metadata_by_id.insert(&token_id, &metadata);
 
         //call the internal method for adding the token to the owner
         self.internal_add_token_to_owner(&token.owner_id, &token_id);
 
         // Construct the mint log as per the events standard.
+        // This information will be available to subgraph
         let nft_mint_log: EventLog = EventLog {
             // Standard name ("nep171").
             standard: NFT_STANDARD_NAME.to_string(),
@@ -65,16 +61,13 @@ impl Contract {
                 // Vector of token IDs that were minted.
                 token_ids: vec![token_id.to_string()],
                 // An optional memo to include.
-                memo: None,
+                memo: Some(r#"{"status":"NEW"}"#.to_string())
             }]),
         };
-
-        // Log the serialized json.
         env::log_str(&nft_mint_log.to_string());
 
-        //calculate the required storage which was the used - initial
         let required_storage_in_bytes = env::storage_usage() - initial_storage_usage;
-
+        
         //refund any excess storage if the user attached too much. Panic if they didn't attach enough to cover the required.
         refund_deposit(required_storage_in_bytes);
     }

@@ -2,21 +2,13 @@ use crate::*;
 
 #[near_bindgen]
 impl Contract {
-    
     // total number of orders on contract
-    pub fn get_supply_orders(
-        &self,
-    ) -> U64 {
+    pub fn get_supply_orders(&self) -> U64 {
         U64(self.orders.len())
     }
-    
     // total number of orders by requester
-    pub fn get_supply_by_requester_id(
-        &self,
-        requester_id: AccountId,
-    ) -> U64 {
+    pub fn get_supply_by_requester_id(&self, requester_id: AccountId) -> U64 {
         let by_requester = self.by_requester.get(&requester_id);
-        
         if let Some(by_requester) = by_requester {
             U64(by_requester.len())
         } else {
@@ -39,22 +31,46 @@ impl Contract {
         } else {
             return vec![];
         };
-        
         //we'll convert the UnorderedSet into a vector of strings
         let keys = orders_by_requester.as_vector();
 
         //where to start pagination - if we have a from_index, we'll use that - otherwise start from 0 index
         let start = u128::from(from_index.unwrap_or(U128(0)));
-        
         //iterate through the keys vector
         keys.iter()
             //skip to the index we specified in the start variable
-            .skip(start as usize) 
+            .skip(start as usize)
             //take the first "limit" elements in the vector. If we didn't specify a limit, use 0
-            .take(limit.unwrap_or(0) as usize) 
+            .take(limit.unwrap_or(0) as usize)
             //we'll map the token IDs which are strings into Sale objects
             .map(|requester_token_id| self.orders.get(&requester_token_id).unwrap())
             //since we turned the keys into an iterator, we need to turn it back into a vector to return
+            .collect()
+    }
+
+    //returns paginated order objects for a given account. (result is a vector of sales)
+    pub fn get_orders_by_assignee(
+        &self,
+        assignee_id: AccountId,
+        from_index: Option<U128>,
+        limit: Option<u64>,
+    ) -> Vec<Order> {
+        let by_assignee = self.by_assignee.get(&assignee_id);
+
+        let orders_by_assignee = if let Some(by_assignee) = by_assignee {
+            by_assignee
+        } else {
+            return vec![];
+        };
+
+        let keys = orders_by_assignee.as_vector();
+
+        let start = u128::from(from_index.unwrap_or(U128(0)));
+
+        keys.iter()
+            .skip(start as usize)
+            .take(limit.unwrap_or(0) as usize)
+            .map(|assignee_token_id| self.orders.get(&assignee_token_id).unwrap())
             .collect()
     }
 
@@ -122,9 +138,6 @@ impl Contract {
 //             .unwrap(),
 //         )
 
-        
-
-        
 //         // assert_eq!(order.requester_id, accounts(0));
 //         assert_eq!(order.token_id, token_id);
 //         assert_eq!(order.status, "NEW".to_string());
