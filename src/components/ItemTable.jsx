@@ -1,9 +1,9 @@
-
+import { gql, useQuery } from "@apollo/client";
 import { utils } from "near-api-js";
 import React, { useMemo, useState } from "react";
 import { isSetAccessorDeclaration } from "typescript";
-import { classNames } from "./shared/utils";
-import InfiniteListWithVerticalScroll from "./common/List";
+import { classNames } from "./shared/Utils";
+import Table, { SelectColumnFilter } from "./Table";
 
 const PER_PAGE_LIMIT = 10;
 
@@ -116,66 +116,6 @@ const ItemTable = ({ contract, wallet, currentUser, role }) => {
       {
         id: "5",
         signerId: "efiz.test.near",
-      },
-      {
-        id: "6",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "7",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "8",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "9",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "10",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "11",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "12",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "13",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "14",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "15",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "16",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "17",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "18",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "19",
-        signerId: "efiz.test.near",
-      },
-      {
-        id: "20",
-        signerId: "efiz.test.near",
       }
     ]
   }
@@ -184,8 +124,10 @@ const ItemTable = ({ contract, wallet, currentUser, role }) => {
   return (
     <>
       <h1 className="text-xl font-semibold">Items</h1>
-        <InfiniteListWithVerticalScroll />
+      <div className="mt-4">
+        <Table columns={columns} data={(data && data.items) || []} />
         { order ? <h1>{order}</h1> : null}
+      </div>
     </>
   );
 };

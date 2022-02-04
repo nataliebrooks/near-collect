@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState, useMemo } from "react";
-import Table, { SelectColumnFilter } from "./shared/Table";
-import { classNames } from "./shared/utils";
+import Table, { SelectColumnFilter } from "./Table";
+import { classNames } from "./shared/Utils";
 
 const PER_PAGE_LIMIT = 10;
 

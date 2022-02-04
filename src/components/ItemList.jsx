@@ -33,7 +33,7 @@ const Item = ({ item }) => {
       <div className="flex flex-col p-2 ">
         {/* item itself, should have a link */}
         <div className="shadow-lg hover:shadow hover:-translateY-sm flex flex-1 flex-col rounded-lg overflow-hidden">
-          <img className="h-32 w-full shadow-inner bg-cover" src={item.media} />
+          <img className="w-full shadow-inner bg-cover" src={item.media} />
           <div className="flex flex-1 flex-col justify-center p-4 border-t bg-white">
             <p className="leading-normal text-sm truncate">
               {item.description}
