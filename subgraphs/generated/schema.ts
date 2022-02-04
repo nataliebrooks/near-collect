@@ -11,34 +11,27 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class Item extends Entity {
+export class User extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("signerId", Value.fromString(""));
-    this.set("rootId", Value.fromString(""));
-    this.set("parentId", Value.fromString(""));
-    this.set("status", Value.fromString(""));
-    this.set("category", Value.fromString(""));
-    this.set("log", Value.fromStringArray(new Array(0)));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Item entity without an ID");
+    assert(id != null, "Cannot save User entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        "Cannot save Item entity with non-string ID. " +
+        "Cannot save User entity with non-string ID. " +
           'Considering using .toHex() to convert the "id" to a string.'
       );
-      store.set("Item", id.toString(), this);
+      store.set("User", id.toString(), this);
     }
   }
 
-  static load(id: string): Item | null {
-    return changetype<Item | null>(store.get("Item", id));
+  static load(id: string): User | null {
+    return changetype<User | null>(store.get("User", id));
   }
 
   get id(): string {
@@ -50,13 +43,112 @@ export class Item extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get signerId(): string {
-    let value = this.get("signerId");
+  get tokensInPossession(): Array<string> {
+    let value = this.get("tokensInPossession");
+    return value!.toStringArray();
+  }
+
+  set tokensInPossession(value: Array<string>) {
+    this.set("tokensInPossession", Value.fromStringArray(value));
+  }
+
+  get tokensCreated(): Array<string> {
+    let value = this.get("tokensCreated");
+    return value!.toStringArray();
+  }
+
+  set tokensCreated(value: Array<string>) {
+    this.set("tokensCreated", Value.fromStringArray(value));
+  }
+}
+
+export class Token extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("owner", Value.fromString(""));
+    this.set("ownerId", Value.fromString(""));
+    this.set("creator", Value.fromString(""));
+    this.set("creatorId", Value.fromString(""));
+    this.set("tokenId", Value.fromString(""));
+    this.set("rootId", Value.fromString(""));
+    this.set("image", Value.fromString(""));
+    this.set("metadata", Value.fromString(""));
+    this.set("status", Value.fromString(""));
+    this.set("category", Value.fromString(""));
+    this.set("log", Value.fromStringArray(new Array(0)));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Token entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Token entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Token", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Token | null {
+    return changetype<Token | null>(store.get("Token", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
     return value!.toString();
   }
 
-  set signerId(value: string) {
-    this.set("signerId", Value.fromString(value));
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get owner(): string {
+    let value = this.get("owner");
+    return value!.toString();
+  }
+
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
+  }
+
+  get ownerId(): string {
+    let value = this.get("ownerId");
+    return value!.toString();
+  }
+
+  set ownerId(value: string) {
+    this.set("ownerId", Value.fromString(value));
+  }
+
+  get creator(): string {
+    let value = this.get("creator");
+    return value!.toString();
+  }
+
+  set creator(value: string) {
+    this.set("creator", Value.fromString(value));
+  }
+
+  get creatorId(): string {
+    let value = this.get("creatorId");
+    return value!.toString();
+  }
+
+  set creatorId(value: string) {
+    this.set("creatorId", Value.fromString(value));
+  }
+
+  get tokenId(): string {
+    let value = this.get("tokenId");
+    return value!.toString();
+  }
+
+  set tokenId(value: string) {
+    this.set("tokenId", Value.fromString(value));
   }
 
   get rootId(): string {
@@ -68,13 +160,22 @@ export class Item extends Entity {
     this.set("rootId", Value.fromString(value));
   }
 
-  get parentId(): string {
-    let value = this.get("parentId");
+  get image(): string {
+    let value = this.get("image");
     return value!.toString();
   }
 
-  set parentId(value: string) {
-    this.set("parentId", Value.fromString(value));
+  set image(value: string) {
+    this.set("image", Value.fromString(value));
+  }
+
+  get metadata(): string {
+    let value = this.get("metadata");
+    return value!.toString();
+  }
+
+  set metadata(value: string) {
+    this.set("metadata", Value.fromString(value));
   }
 
   get status(): string {
@@ -86,57 +187,6 @@ export class Item extends Entity {
     this.set("status", Value.fromString(value));
   }
 
-  get title(): string | null {
-    let value = this.get("title");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set title(value: string | null) {
-    if (!value) {
-      this.unset("title");
-    } else {
-      this.set("title", Value.fromString(<string>value));
-    }
-  }
-
-  get description(): string | null {
-    let value = this.get("description");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set description(value: string | null) {
-    if (!value) {
-      this.unset("description");
-    } else {
-      this.set("description", Value.fromString(<string>value));
-    }
-  }
-
-  get media(): string | null {
-    let value = this.get("media");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set media(value: string | null) {
-    if (!value) {
-      this.unset("media");
-    } else {
-      this.set("media", Value.fromString(<string>value));
-    }
-  }
-
   get category(): string {
     let value = this.get("category");
     return value!.toString();
@@ -146,8 +196,8 @@ export class Item extends Entity {
     this.set("category", Value.fromString(value));
   }
 
-  get label(): Array<string> | null {
-    let value = this.get("label");
+  get labels(): Array<string> | null {
+    let value = this.get("labels");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -155,11 +205,11 @@ export class Item extends Entity {
     }
   }
 
-  set label(value: Array<string> | null) {
+  set labels(value: Array<string> | null) {
     if (!value) {
-      this.unset("label");
+      this.unset("labels");
     } else {
-      this.set("label", Value.fromStringArray(<Array<string>>value));
+      this.set("labels", Value.fromStringArray(<Array<string>>value));
     }
   }
 
@@ -234,7 +284,6 @@ export class Order extends Entity {
 
     this.set("requesterId", Value.fromString(""));
     this.set("requesteeId", Value.fromString(""));
-    this.set("item", Value.fromString(""));
     this.set("status", Value.fromString(""));
   }
 
@@ -280,15 +329,6 @@ export class Order extends Entity {
 
   set requesteeId(value: string) {
     this.set("requesteeId", Value.fromString(value));
-  }
-
-  get item(): string {
-    let value = this.get("item");
-    return value!.toString();
-  }
-
-  set item(value: string) {
-    this.set("item", Value.fromString(value));
   }
 
   get status(): string {

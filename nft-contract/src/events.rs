@@ -11,6 +11,7 @@ use near_sdk::serde::{Deserialize, Serialize};
 #[non_exhaustive]
 pub enum EventLogVariant {
     NftMint(Vec<NftMintLog>),
+    NftUpdateLog(Vec<NftUpdateLog>),
     NftTransfer(Vec<NftTransferLog>),
 }
 
@@ -51,6 +52,24 @@ impl fmt::Display for EventLog {
 pub struct NftMintLog {
     pub owner_id: String,
     pub token_ids: Vec<String>,
+    pub root_id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub memo: Option<String>,
+}
+
+/// An event log to capture token updates
+///
+/// Arguments
+/// * `owner_id`: "account.near"
+/// * `token_ids`: ["1", "abc"]
+/// * `memo`: optional message
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(crate = "near_sdk::serde")]
+pub struct NftUpdateLog {
+    pub token_ids: Vec<String>,
+    pub category: Option<String>,
+    pub labels: Option<Vec<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memo: Option<String>,

@@ -10,8 +10,9 @@ use crate::*;
 pub struct Order {
     pub requester_id: AccountId,   // Person B, requesting Person A's item
     pub token_owner_id: AccountId, // Person A, holding the item
+    // pub approval_id: u64,   //market contract's approval ID to transfer the token on behalf of the owner
     // pub nft_contract_id: String, // nft contract where token was minted... common-good
-    pub token_id: String, // token Id of Person A's item
+    pub token_id: String,     // token Id of Person A's item
     pub status: String,       // lifecycle status
     pub instructions: String, // instructions on how to deliver
 }
@@ -107,6 +108,27 @@ impl Contract {
         // TODO : Check that call was from "owner_id" and in ACCEPTED state
         order.status = "IN_TRANSIT".to_string();
         self.orders.insert(&requester_and_token_id, &order);
+
+        ext_contract::nft_transfer_payout(
+            requester_id.clone(),                 //purchaser (person to transfer the NFT to)
+            token_id,
+            order.approval_id,
+            "payout from market".to_string(),
+            price,
+            10, //the maximum amount of accounts the market can payout at once (this is limited by GAS)
+            nft_contract_id, //contract to initiate the cross contract call to
+            1,  //yoctoNEAR to attach to the call
+            GAS_FOR_NFT_TRANSFER, //GAS to attach to the call
+        );
+        //after the transfer payout has been initiated, we resolve the promise by calling our own resolve_purchase function.
+        //resolve purchase will take the payout object returned from the nft_transfer_payout and actually pay the accounts
+        // .then(ext_self::resolve_purchase(
+        //     buyer_id, //the buyer and price are passed in incase something goes wrong and we need to refund the buyer
+        //     price,
+        //     env::current_account_id(), //we are invoking this function on the current contract
+        //     NO_DEPOSIT,                //don't attach any deposit
+        //     GAS_FOR_ROYALTIES,         //GAS attached to the call to payout royalties
+        // ))
         // SEND TOKEN TO COMMON GOOD
     }
 
@@ -311,10 +333,10 @@ impl Contract {
     check to see if it's authentic and there's no problems. If everything is fine, it will pay the accounts. If there's a problem,
     it will refund the buyer for the price.
 */
-// #[ext_contract(ext_self)]
-// trait ExtSelf {
-//     fn resolve_purchase(&mut self, buyer_id: AccountId, price: U128) -> Promise;
-// }
+#[ext_contract(ext_self)]
+trait ExtSelf {
+    fn resolve_purchase(&mut self, buyer_id: AccountId, price: U128) -> Promise;
+}
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {

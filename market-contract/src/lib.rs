@@ -8,13 +8,13 @@ use near_sdk::{
 };
 use std::collections::HashMap;
 
-// use crate::external::*;
+use crate::external::*;
 use crate::internal::*;
 // use crate::sale::*;
 use crate::order::*;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 
-// mod external;
+mod external;
 mod internal;
 // mod nft_callbacks;
 // mod sale;

@@ -3,6 +3,9 @@ description: Common Good # the name of the subgraph
 repository: https://github.com/VitalPointAI/near-subgraph-template.git # repo where subgraph project is stored
 schema:
   file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
+  - fullTextSearch
 dataSources:
   # ---------------------------------------------------------
   # ITEMS ---------------------------------------------------
@@ -18,8 +21,8 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/handlers/item.ts
       entities:
-        - Item # the example entity in the schema.graphql file
-        - Log # example log entity in the schema.graphql file
+        - Token
+        - User
       receiptHandlers:
         - handler: handleReceipt # name of the receipt handler
   
