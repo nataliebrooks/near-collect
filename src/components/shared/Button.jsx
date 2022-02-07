@@ -6,7 +6,7 @@ export function Button({ children, className, ...rest }) {
   return (
     <Link
       className={classNames(
-        "grow flex justify-center items-center rounded-lg",
+        "flex justify-center items-center",
         className
       )}
       {...rest}

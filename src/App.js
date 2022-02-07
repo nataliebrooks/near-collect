@@ -16,7 +16,7 @@ const App = ({ currentUser, wallet }) => {
         <div className="z-40 pt-4 mx-8">
             <div className="relative flex items-center text-gray-500">
               <div>
-                <h2 className="text-xl">{currentUser.accountId}</h2>
+                {/* <h2 className="text-xl">{currentUser.accountId}</h2> */}
               </div>
               <div className="ml-auto -my-1 hover:text-gray-700">
                 <button onClick={signOut}>Log out</button>

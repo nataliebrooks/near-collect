@@ -99,9 +99,9 @@ window.nearInitPromise = initContract().then(
             <Route
               path="/"
               element={
-                <RequireAuth currentUser={currentUser}>
+                // <RequireAuth currentUser={currentUser}>
                   <App currentUser={currentUser} wallet={walletConnection} />
-                </RequireAuth>
+                // </RequireAuth>
               }
             >
               <Route index element={<Start />} />

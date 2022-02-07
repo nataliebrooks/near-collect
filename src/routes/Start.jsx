@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "../components/shared/Button";
+import { Link } from "react-router-dom";
 
 export default function Start({
   producerColor,
@@ -10,43 +11,58 @@ export default function Start({
   warehouseColor,
 }) {
   return (
-    <main className="flex flex-col text-white text-lg text-center font-bold leading-6 h-full">
-      <Button
-        to="producer"
-        className={`mt-4 mx-4 mb-2 bg-producer-400 shadow-xl hover:shadow-lg hover:bg-producer-400  hover:-translate-y-1`}
-      >
-        <h1 className="self-center">Producer</h1>
-      </Button>
-      <Button
-        to="distributor"
-        className={`my-2 mx-4 bg-distributor-400 shadow-xl hover:shadow-lg hover:bg-distributor-400  hover:-translate-y-1`}
-      >
-        <h1 className="self-center">Distributor</h1>
-      </Button>
-      <Button
-        to="organizer"
-        className={`my-2 mx-4  bg-organizer-400 shadow-xl hover:shadow-lg hover:bg-organizer-400  hover:-translate-y-1`}
-      >
-        <h1 className="self-center">Organizer</h1>
-      </Button>
-      <Button
-        to="transporter"
-        className={`my-2 mx-4  bg-transporter-400 shadow-xl hover:shadow-lg hover:bg-transporter-400  hover:-translate-y-1`}
-      >
-        <h1 className="self-center">Transporter</h1>
-      </Button>
-      <Button
-        to="vendor"
-        className={`my-2 mx-4 bg-vendor-400 shadow-xl hover:shadow-lg hover:bg-vendor-400  hover:-translate-y-1`}
-      >
-        <h1 className="self-center">Vendor</h1>
-      </Button>
-      <Button
-        to="warehouse"
-        className={`mb-4 mt-2 mx-4 bg-warehouse-400 shadow-xl hover:shadow-lg hover:bg-warehouse-400  hover:-translate-y-1`}
-      >
-        <h1 className="self-center">Warehouse</h1>
-      </Button>
+    <main className="flex flex-col justify-end h-screen w-full">
+      <div className="flex flex-col justify-end h-1/2 pl-16 pr-4">
+        <h1 className="text-5xl font-bold text-green-600">Hello,</h1>
+        <h6 className="text-xl">welcome to collect!</h6>
+        <br />
+        <p>
+          Please explore the proof of concept, or visit the walkthrough 
+          if you'd like to understand more about how this works.
+        </p>
+      </div>
+      <div className="flex justify-center items-center h-1/2">
+        <div className="flex flex-col">
+          <Link
+            to="producer"
+            className={`m-2 p-3 border-2 border-producer-400`}
+          >
+            <h1 className="self-center">Producer</h1>
+          </Link>
+          <Link
+            to="distributor"
+            className={`m-2 p-3 border-2 border-distributor-400`}
+          >
+            <h1 className="self-center">Distributor</h1>
+          </Link>
+          <Link
+            to="organizer"
+            className={`m-2 p-3 border-2 border-organizer-400`}
+          >
+            <h1 className="self-center">Organizer</h1>
+          </Link>
+        </div>
+        <div className="flex flex-col">
+          <Link
+            to="transporter"
+            className={` m-2 p-3 border-2 border-transporter-400`}
+          >
+            <h1 className="self-center">Transporter</h1>
+          </Link>
+          <Link
+            to="vendor"
+            className={`m-2 p-3 border-2 border-vendor-400`}
+          >
+            <h1 className="self-center">Vendor</h1>
+          </Link>
+          <Link
+            to="warehouse"
+            className={`m-2 p-3 border-2 border-warehouse-400`}
+          >
+            <h1 className="self-center">Warehouse</h1>
+          </Link>
+        </div>
+      </div>
     </main>
   );
 }
