@@ -49,28 +49,54 @@ impl Contract {
     }
 
     //returns paginated order objects for a given account. (result is a vector of sales)
-    pub fn get_orders_by_assignee(
+    pub fn get_orders_by_requestee(
         &self,
-        assignee_id: AccountId,
+        requestee: AccountId,
         from_index: Option<U128>,
         limit: Option<u64>,
     ) -> Vec<Order> {
-        let by_assignee = self.by_assignee.get(&assignee_id);
+        let by_requestee = self.by_requestee.get(&requestee);
 
-        let orders_by_assignee = if let Some(by_assignee) = by_assignee {
-            by_assignee
+        let orders_by_requestee = if let Some(by_requestee) = by_requestee {
+            by_requestee
         } else {
             return vec![];
         };
 
-        let keys = orders_by_assignee.as_vector();
+        let keys = orders_by_requestee.as_vector();
 
         let start = u128::from(from_index.unwrap_or(U128(0)));
 
         keys.iter()
             .skip(start as usize)
             .take(limit.unwrap_or(0) as usize)
-            .map(|assignee_token_id| self.orders.get(&assignee_token_id).unwrap())
+            .map(|requestee_token_id| self.orders.get(&requestee_token_id).unwrap())
+            .collect()
+    }
+
+      //returns paginated order objects for a given account. (result is a vector of sales)
+      pub fn get_orders_by_transporter(
+        &self,
+        transporter_id: AccountId,
+        from_index: Option<U128>,
+        limit: Option<u64>,
+    ) -> Vec<Order> {
+        let by_transporter = self.by_transporter.get(&transporter_id);
+
+        let orders_by_transporter = if let Some(by_transporter) = by_transporter {
+            by_transporter
+        } else {
+            return vec![];
+        };
+
+        let keys = orders_by_transporter.as_vector();
+
+        let start = u128::from(from_index.unwrap_or(U128(0)));
+
+        keys.iter()
+            .skip(start as usize)
+            .take(limit.unwrap_or(0) as usize)
+            .map(|transporter_token_id| self.orders.get(&transporter_token_id).unwrap())
             .collect()
     }
 

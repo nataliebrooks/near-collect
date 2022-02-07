@@ -28,7 +28,7 @@ function handleAction(
   const functionCall = action.toFunctionCall();
 
   // change the methodName here to the methodName emitting the log in the contract
-  if (functionCall.methodName == "create_order") {
+  if (functionCall.methodName == "create_order" || functionCall.methodName == "accept_order") {
     const receiptId = receipt.id.toHexString();
     let order = new Order(`${receiptId}`);
     order.requesterId = receipt.signerId;
