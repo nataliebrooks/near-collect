@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ItemTable from "../components/ItemTable";
+import ItemList from "../components/ItemList"
 
-export default function Items({ contract, wallet, currentUser, role }) {
+export default function Items() {
   return (
     <main className="flex flex-col h-screen w-full">
-      <ItemTable contract={contract} wallet={wallet} currentUser={currentUser} role={role} />
+      <ItemList />
     </main>
   );
 }

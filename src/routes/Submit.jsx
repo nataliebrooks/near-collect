@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import * as nearAPI from "near-api-js";
 
 export default function Submit({ contract, currentUser }) {
@@ -21,7 +21,7 @@ export default function Submit({ contract, currentUser }) {
 
     const item = await contract.nft_mint(
       {
-        token_id: "3",
+        token_id: `${currentUser.account}` + Date.now(),
         receiver_id: currentUser.accountId,
         metadata: {
           title: "Test",
@@ -33,13 +33,12 @@ export default function Submit({ contract, currentUser }) {
       "200000000000000",
       nearAPI.utils.format.parseNearAmount("0.1")
     ); // This needs to redirect
-
-    setAnswer("");
-    setLoading(false);
   };
 
   return (
-    <main className="flex flex-1">
+    <main className="flex flex-1 flex-col">
+      <img className="h-4/6 shadow-inner bg-cover" src={image} />
+      <h2>answer</h2>
       <button onClick={handleSubmit}>Submit</button>
     </main>
   );

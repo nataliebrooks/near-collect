@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import OrderTable from "../components/OrderTable";
+import OrderList from "../components/OrderList";
 
 
-export default function Orders({ contract, wallet, currentUser, role}) {
+export default function Orders({ wallet, currentUser }) {
   return (
-    <main className="flex flex-col h-screen w-full p-8">
-      <OrderTable contract={contract} wallet={wallet} currentUser={currentUser} role={role} />
+    <main className="flex flex-col h-screen w-full">
+      <OrderList wallet={wallet} currentUser={currentUser} />
     </main>
   );
 }

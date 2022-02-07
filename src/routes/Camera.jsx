@@ -3,40 +3,6 @@ import { Camera as ReactCamera, CameraType } from "react-camera-pro";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const Wrapper = styled.div`
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-`;
-
-const Control = styled.div`
-  position: fixed;
-  display: flex;
-  right: 0;
-  width: 20%;
-  min-width: 130px;
-  min-height: 130px;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 50px;
-  box-sizing: border-box;
-  flex-direction: column-reverse;
-  @media (max-aspect-ratio: 1/1) {
-    flex-direction: row;
-    bottom: 0;
-    width: 100%;
-    height: 20%;
-  }
-  @media (max-width: 400px) {
-    padding: 10px;
-  }
-`;
-
 const Button = styled.button`
   outline: none;
   color: white;
@@ -62,10 +28,6 @@ const Button = styled.button`
 `;
 
 const TakePhotoButton = styled(Button)`
-  background: url("https://img.icons8.com/ios/50/000000/compact-camera.png");
-  background-position: center;
-  background-size: 50px;
-  background-repeat: no-repeat;
   width: 80px;
   height: 80px;
   border: solid 4px black;
@@ -110,17 +72,18 @@ const Camera = () => {
   const [image, setImage] = useState(null);
   const camera = useRef(null);
   return (
-    <Wrapper>
+    <div className="fixed w-full h-screen z-10">
       <ReactCamera
         ref={camera}
         aspectRatio="cover"
         numberOfCamerasCallback={setNumberOfCameras}
       />
-      <Control>
-        <Link to="/question" state={{ image: image }}>
+      <div className="flex justify-between fixed bottom-0 w-full">
+        <Link to="/question" state={{ image: image }} className="w-1/3">
           <ImagePreview image={image} />
         </Link>
         <TakePhotoButton
+         className="w-1/3"
           onClick={() => {
             if (camera.current) {
               const photo = camera.current.takePhoto();
@@ -130,15 +93,16 @@ const Camera = () => {
         />
         {numberOfCameras > 1 ? (
           <ChangeFacingCameraButton
+          className="w-1/3"
             onClick={() => {
               if (camera.current) {
                 const result = camera.current.switchCamera();
               }
             }}
           />
-        ) : null}
-      </Control>
-    </Wrapper>
+        ) : <span className="w-1/3" />}
+      </div>
+    </div>
   );
 };
 

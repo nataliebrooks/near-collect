@@ -1,18 +1,18 @@
 import React from "react";
-import { classNames } from "./Utils";
+import { Link } from "react-router-dom";
+import { classNames } from "./utils";
 
 export function Button({ children, className, ...rest }) {
   return (
-    <button
-      type="button"
+    <Link
       className={classNames(
-        "relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50",
+        "grow flex justify-center items-center rounded-lg",
         className
       )}
       {...rest}
     >
       {children}
-    </button>
+    </Link>
   );
 }
 

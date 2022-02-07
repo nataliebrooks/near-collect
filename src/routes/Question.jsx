@@ -13,11 +13,12 @@ export default function Question({ contract, currentUser }) {
 
   return (
     <main className="flex flex-col justify-between h-screen w-full p-8">
-      <header>
-        <Link to="/">Back</Link>
-      </header>
-      <section className="flex-1 grid content-center">
-        <h2>What was in that picture? What things? And how many of them?</h2>
+      <section className="flex-1 content-center ">
+        <img className="h-4/6 shadow-inner bg-cover" src={image} />
+        <h2>
+          What is in this picture? <br /> Please be as descriptive as possible.
+          (ie. quality, quantity...)
+        </h2>
         <input
           className="appearance-none block bg-slate-200 text-slate-700 pxborder rounded leading-tight focus:outline-none focus:bg-white"
           id={"input_"} // This could be dynamic, question underscored

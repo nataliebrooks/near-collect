@@ -1,0 +1,6 @@
+export const PRODUCER = "red"
+export const DISTRIBUTOR = "orange"
+export const ORGANIZER = "yellow"
+export const TRANSPORTER = "green"
+export const VENDOR = "blue"
+export const WAREHOUSE = "purple"
