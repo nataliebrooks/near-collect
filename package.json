@@ -4,7 +4,7 @@
   "license": "(MIT AND Apache-2.0)",
   "scripts": {
     "build": "yarn build:contract && yarn build:web",
-    "build:contract": "(cd contracts/nft && ./build.sh)",
+    "build:contract": "cd nft-contract && ./build.sh && cd .. && ls && cd market-contract && ./build.sh && cd ..",
     "build:web": "parcel build src/index.html --public-url ./",
     "deploy": "yarn build && (yarn test:contract && near dev-deploy --wasmFile res/non-fungible_token.wasm)",
     "dev": "yarn build:contract && near dev-deploy && yarn dev:start",
@@ -41,6 +41,7 @@
     "@apollo/client": "^3.5.8",
     "@heroicons/react": "^1.0.5",
     "@tailwindcss/forms": "^0.4.0",
+    "axios": "^0.25.0",
     "big": "^0.5.2",
     "big.js": "^6.1.1",
     "env-cmd": "^10.1.0",
@@ -48,9 +49,13 @@
     "near-api-js": "^0.44.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
+    "react-camera-pro": "^1.1.1",
     "react-dom": "^17.0.2",
+    "react-infinite-scroll-hook": "^4.0.2",
+    "react-router-dom": "^6.2.1",
     "react-table": "^7.7.0",
-    "regenerator-runtime": "^0.13.9"
+    "regenerator-runtime": "^0.13.9",
+    "styled-components": "^5.3.3"
   },
   "resolutions": {
     "@babel/preset-env": "7.13.8"

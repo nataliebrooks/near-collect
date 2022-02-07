@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import * as nearAPI from 'near-api-js';
+import { Link } from "react-router-dom";
+import * as nearAPI from "near-api-js";
 // import Big from 'big.js';
 
 // const BOATLOAD_OF_GAS = Big(3).times(10 ** 13).toFixed();
@@ -21,9 +22,14 @@ const CreateItem = ({ contract, currentUser }) => {
     // invoke the smart contract's create method
     const item = await contract.nft_mint(
       {
-        "token_id": "100",
-        "receiver_id": currentUser.accountId,
-        "token_metadata": { "title": title, "description": "init tests", "media": media, "copies": 1}
+        token_id: "100",
+        receiver_id: currentUser.accountId,
+        token_metadata: {
+          title: title,
+          description: "init tests",
+          media: media,
+          copies: 1,
+        },
       },
       "200000000000000",
       nearAPI.utils.format.parseNearAmount("0.1")
@@ -37,8 +43,13 @@ const CreateItem = ({ contract, currentUser }) => {
   };
   return (
     <>
-      <div className="w-full max-w-xs">
-        <form onSubmit={handleSubmit}>
+      <button
+        className="bg-green-500 hover:bg-green-700 leading-tight text-white h-screen w-full"
+        disabled={loading}
+      >
+        Give to the Common Good
+      </button>
+      {/* <form onSubmit={handleSubmit}>
           <div className="relative flex items-center ">
             <input
               className="appearance-none block bg-slate-200 text-slate-700 pxborder rounded leading-tight focus:outline-none focus:bg-white"
@@ -58,13 +69,12 @@ const CreateItem = ({ contract, currentUser }) => {
             />
           </div>
           <button
-              className="bg-green-500 hover:bg-green-700 px-5 py-2 leading-tight rounded text-white"
+              
               disabled={loading}
             >
               Create
             </button>
-        </form>
-      </div>
+        </form> */}
     </>
   );
 };

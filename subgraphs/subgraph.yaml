@@ -1,11 +1,17 @@
 specVersion: 0.0.4
-description: common-good # the name of the subgraph
+description: Common Good # the name of the subgraph
 repository: https://github.com/VitalPointAI/near-subgraph-template.git # repo where subgraph project is stored
 schema:
   file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
+  - fullTextSearch
 dataSources:
+  # ---------------------------------------------------------
+  # ITEMS ---------------------------------------------------
+  # ---------------------------------------------------------
   - kind: near
-    name: receipts # could also be blocks
+    name:  Items
     network: near-testnet # can choose either near-mainnet or near-testnet
     source:
       account: common-good.frontier.testnet # contract account you want to pull data from
@@ -13,11 +19,28 @@ dataSources:
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mapping.ts
+      file: ./src/handlers/item.ts
       entities:
-        - Item # the example entity in the schema.graphql file
-        - Log # example log entity in the schema.graphql file
+        - Token
+        - User
       receiptHandlers:
         - handler: handleReceipt # name of the receipt handler
-
+  
+  # ---------------------------------------------------------
+  # ORDERS --------------------------------------------------
+  # ---------------------------------------------------------
+  - kind: near
+    name: Orders
+    network: near-testnet # can choose either near-mainnet or near-testnet
+    source:
+      account: order-book.frontier.testnet # contract account you want to pull data from
+      startBlock: 80177542 # starting block on near-mainnet for indexing
+    mapping:
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/handlers/order.ts
+      entities:
+        - Order # the example entity in the schema.graphql file
+      receiptHandlers:
+        - handler: handleReceipt # name of the receipt handler
         
