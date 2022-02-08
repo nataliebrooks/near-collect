@@ -46,3 +46,8 @@ near view $CONTRACT_NAME get_supply_orders
 near view $CONTRACT_NAME get_supply_by_requester_id '{"requester_id": "'$ACCOUNT_ID'"}'
 
 near view $CONTRACT_NAME get_orders_by_requester '{"requester_id": "'$ACCOUNT_ID'", "limit": 5}'
+
+
+
+
+

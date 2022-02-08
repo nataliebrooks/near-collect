@@ -26,8 +26,8 @@ function handleAction(
   }
 
   const functionCall = action.toFunctionCall();
-  const ipfsHash =
-    "bafybeiew2l6admor2lx6vnfdaevuuenzgeyrpfle56yrgse4u6nnkwrfeu";
+  // const ipfsHash =
+  //   "bafybeiew2l6admor2lx6vnfdaevuuenzgeyrpfle56yrgse4u6nnkwrfeu";
 
   if (functionCall.methodName == "nft_mint") {
     // item (NFT) has been minted on common good
@@ -65,9 +65,9 @@ function handleAction(
         token.creatorId = ownerId.toString();
         token.creator = ownerId.toString();
 
-        token.image = ipfsHash + "/" + tokenId + ".png";
-        const metadata = ipfsHash + "/" + tokenId + ".json";
-        token.metadata = metadata;
+        // token.image = ipfsHash + "/" + tokenId + ".png";
+        // const metadata = ipfsHash + "/" + tokenId + ".json";
+        // token.metadata = metadata;
 
         // Set status depending on mint from producer or
         // derivative mint from distributor
@@ -107,15 +107,17 @@ function handleAction(
         const tokenId = ids[0].toString();
 
         let token = Token.load(tokenId);
+        if (!token) return;
 
         const category = data.get("category");
-        token.category = category ? category.toString() : token.category;
+        if (category) {
+          token.category = category.toString();
+        }
 
         const labels = data.get("labels");
-        const lbls: JSONValue[] = labels.toArray();
-      
-        if (lbls) {
-          token.labels = lbls.map(it => it.toString());
+        if (labels) {
+          const lbls: JSONValue[] = labels.toArray();
+          token.labels = lbls.map<string>((data: JSONValue) => data.toString());        
         }
         token.save();
       }

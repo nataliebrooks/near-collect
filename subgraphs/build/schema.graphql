@@ -1,20 +1,37 @@
-type Item @entity {
+type User @entity {
   id: ID!
-  signerId: String!  
-  status: Status!
-  title: String
-  description: String
-  image: String # TODO
+  tokensInPossession: [Token!]! @derivedFrom(field: "owner")
+  tokensCreated: [Token!]! @derivedFrom(field: "creator")
+}
+
+type Token @entity {
+  id: ID!
+  owner: User!
+  ownerId: String!
+  creator: User!
+  creatorId: String!
+  tokenId: String!
+  rootId: String!
+  image: String!
+  metadata: String!
+  status: ItemStatus!
   category: Category!
-  labels: [Label!]
-  log: [Log!]! # item history
+  labels: [String!]
+  # derivatives: [String!] @derivedFrom(field: "rootId")
+  # log: [Log!]!
 }
 
 type Log @entity {
   id: ID!
   tokenId: String!
   receiverId: String!
-  status: String!
+}
+
+type Order @entity {
+  id: ID!
+  orderId: String!
+  tokenId: String!
+  status: OrderStatus!
 }
 
 
@@ -22,8 +39,16 @@ type Log @entity {
 # Enums ---------------------------------------------------
 # ---------------------------------------------------------
 
-enum Status @entity {
+enum ItemStatus @entity {
   NEW
+  NEEDS_LABELLING
+}
+
+enum OrderStatus @entity {
+  NEW
+  NEEDS_TRANSPORT
+  IN_TRANSIT
+  DELIVERED
 }
 
 enum Category @entity {

@@ -77,7 +77,6 @@ export class Token extends Entity {
     this.set("metadata", Value.fromString(""));
     this.set("status", Value.fromString(""));
     this.set("category", Value.fromString(""));
-    this.set("log", Value.fromStringArray(new Array(0)));
   }
 
   save(): void {
@@ -212,15 +211,6 @@ export class Token extends Entity {
       this.set("labels", Value.fromStringArray(<Array<string>>value));
     }
   }
-
-  get log(): Array<string> {
-    let value = this.get("log");
-    return value!.toStringArray();
-  }
-
-  set log(value: Array<string>) {
-    this.set("log", Value.fromStringArray(value));
-  }
 }
 
 export class Log extends Entity {
@@ -282,8 +272,8 @@ export class Order extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("requesterId", Value.fromString(""));
-    this.set("requesteeId", Value.fromString(""));
+    this.set("orderId", Value.fromString(""));
+    this.set("tokenId", Value.fromString(""));
     this.set("status", Value.fromString(""));
   }
 
@@ -313,22 +303,22 @@ export class Order extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get requesterId(): string {
-    let value = this.get("requesterId");
+  get orderId(): string {
+    let value = this.get("orderId");
     return value!.toString();
   }
 
-  set requesterId(value: string) {
-    this.set("requesterId", Value.fromString(value));
+  set orderId(value: string) {
+    this.set("orderId", Value.fromString(value));
   }
 
-  get requesteeId(): string {
-    let value = this.get("requesteeId");
+  get tokenId(): string {
+    let value = this.get("tokenId");
     return value!.toString();
   }
 
-  set requesteeId(value: string) {
-    this.set("requesteeId", Value.fromString(value));
+  set tokenId(value: string) {
+    this.set("tokenId", Value.fromString(value));
   }
 
   get status(): string {
