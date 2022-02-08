@@ -51,11 +51,11 @@ impl Contract {
     //returns paginated order objects for a given account. (result is a vector of sales)
     pub fn get_orders_by_requestee(
         &self,
-        requestee: AccountId,
+        requestee_id: AccountId,
         from_index: Option<U128>,
         limit: Option<u64>,
     ) -> Vec<Order> {
-        let by_requestee = self.by_requestee.get(&requestee);
+        let by_requestee = self.by_requestee.get(&requestee_id);
 
         let orders_by_requestee = if let Some(by_requestee) = by_requestee {
             by_requestee

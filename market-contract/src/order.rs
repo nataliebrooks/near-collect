@@ -28,7 +28,7 @@ impl Contract {
             requester_id: to.clone(),
             requestee_id: from.clone(),
             transporter_id: None,
-            token_id: token_id,
+            token_id: token_id.clone(),
             status: "NEW".to_string(),
         };
 
@@ -82,6 +82,7 @@ impl Contract {
             event: EventLogVariant::OrderLog(vec![OrderLog {
                 status: "NEW".to_string(),
                 order_id: requester_and_token_id,
+                token_id: token_id,
                 memo: None
             }]),
         };
@@ -111,7 +112,7 @@ impl Contract {
             "Order's current status is not as expected"
         );
 
-        order.status = next_status;
+        order.status = next_status.clone();
         order.transporter_id = transporter_id;
         self.orders.insert(&requester_and_token_id, &order);
 
@@ -124,6 +125,7 @@ impl Contract {
             event: EventLogVariant::OrderLog(vec![OrderLog {
                 status: next_status,
                 order_id: requester_and_token_id,
+                token_id: token_id,
                 memo: None
             }]),
         };

@@ -4,8 +4,8 @@ use crate::*;
 impl Contract {
   pub fn distributor_req_pile_from_producer(
     &mut self,
-    distributor: AccountId,
-    producer: AccountId,
+    distributor_id: AccountId,
+    producer_id: AccountId,
     token_id: String,
   ) {
     // Producer creates pile, made visible to the distributor
@@ -13,7 +13,7 @@ impl Contract {
 
     // //assert that the user has attached exactly 1 yoctoNEAR (for security reasons)
     // assert_one_yocto();
-    self.create_order(distributor, producer, token_id);
+    self.create_order(distributor_id, producer_id, token_id);
   }
 
   pub fn producer_acc_req_from_distributor(
@@ -40,9 +40,6 @@ impl Contract {
       "NEEDS_TRANSPORT".to_string(),
       None,
     );
-    self
-      .orders_need_transport
-      .insert(&requester_and_token_id, &order);
   }
 
   pub fn transporter_acc_transfer_req(&mut self, requester_id: AccountId, token_id: String) {
@@ -56,7 +53,6 @@ impl Contract {
       "IN_TRANSIT".to_string(),
       Some(signer_id),
     );
-    self.orders_need_transport.remove(&requester_and_token_id);
 
     // TODO: There should be a better way...
     let signer_id = env::signer_account_id();
@@ -89,7 +85,7 @@ impl Contract {
       distributor_id,
       token_id,
       "IN_TRANSIT".to_string(),
-      "COMPLETE".to_string(),
+      "DELIVERED".to_string(),
       None,
     );
   }

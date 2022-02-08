@@ -16,8 +16,8 @@ type Token @entity {
   metadata: String!
   status: ItemStatus!
   category: Category!
-  labels: [Label!]
-  derivatives: [Token!] @derivedFrom(field: "rootId")
+  labels: [String!]
+  # derivatives: [String!] @derivedFrom(field: "rootId")
   # log: [Log!]!
 }
 
@@ -29,8 +29,8 @@ type Log @entity {
 
 type Order @entity {
   id: ID!
-  requesterId: String!
-  requesteeId: String!
+  orderId: String!
+  tokenId: String!
   status: OrderStatus!
 }
 
@@ -46,6 +46,9 @@ enum ItemStatus @entity {
 
 enum OrderStatus @entity {
   NEW
+  NEEDS_TRANSPORT
+  IN_TRANSIT
+  DELIVERED
 }
 
 enum Category @entity {

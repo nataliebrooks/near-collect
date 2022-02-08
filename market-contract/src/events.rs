@@ -45,6 +45,7 @@ impl fmt::Display for EventLog {
 pub struct OrderLog {
     pub status: String,
     pub order_id: String,
+    pub token_id: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memo: Option<String>,
