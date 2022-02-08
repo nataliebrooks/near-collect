@@ -1,6 +1,6 @@
 /node_modules
-./**/node_modules
-./**/build
+/subgraphs/node_modules
+/subgraphs/build
 /neardev
 /.pnp
 .pnp.js
