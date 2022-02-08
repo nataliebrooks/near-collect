@@ -77,6 +77,6 @@ SignIn.propTypes = {
     contractName: PropTypes.string.isRequired,
   }).isRequired,
   wallet: PropTypes.shape({
-    requestSignIn: PropTypes.func.isRequired
-  }).isRequired
+    requestSignIn: PropTypes.func.isRequired,
+  }).isRequired,
 };

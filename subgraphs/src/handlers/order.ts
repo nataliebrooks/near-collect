@@ -1,4 +1,4 @@
-import { json, log, near } from "@graphprotocol/graph-ts";
+import { near, JSONValue, json, ipfs, log } from "@graphprotocol/graph-ts";
 import { Order } from "../../generated/schema";
 
 export function handleReceipt(receipt: near.ReceiptWithOutcome): void {
@@ -29,10 +29,63 @@ function handleAction(
 
   // change the methodName here to the methodName emitting the log in the contract
   if (functionCall.methodName == "create_order") {
-    const receiptId = receipt.id.toHexString();
-    let order = new Order(`${receiptId}`);
-    order.requesterId = receipt.signerId;
-    // DO SOMETHING
+    if (outcome.logs[0] != null) {
+      // grab the event log and parse into an object
+      const parsed = outcome.logs[0].toString().replace("EVENT_JSON:", "");
+      log.info("outcomeLog {}", [parsed]);
+      const jsonData = json.try_fromString(parsed);
+      const jsonObject = jsonData.value.toObject();
+
+      const eventData = jsonObject.get("data");
+      if (eventData) {
+        const eventArray: JSONValue[] = eventData.toArray();
+
+        const data = eventArray[0].toObject();
+        const status = data.get("status");
+        let orderId = data.get("order_id");
+        let tokenId = data.get("token_id");
+        if (!orderId || !tokenId) return;
+
+        let order = new Order(orderId.toString());
+        if (order) {
+          order.orderId = orderId.toString();
+          order.tokenId = tokenId.toString();
+          if (status) {
+            order.status = status.toString();
+          }      
+          
+          order.save();
+        }
+      }
+    }
+  } if (functionCall.methodName == "accept_order") {
+
+    if (outcome.logs[0] != null) {
+      // grab the event log and parse into an object
+      const parsed = outcome.logs[0].toString().replace("EVENT_JSON:", "");
+      log.info("outcomeLog {}", [parsed]);
+      const jsonData = json.try_fromString(parsed);
+      const jsonObject = jsonData.value.toObject();
+
+      const eventData = jsonObject.get("data");
+      if (eventData) {
+        const eventArray: JSONValue[] = eventData.toArray();
+
+        const data = eventArray[0].toObject();
+        const status = data.get("status");
+        let orderId = data.get("order_id");
+        let tokenId = data.get("token_id");
+        if (!orderId || !tokenId) return;
+
+        let order = Order.load(orderId.toString());
+        if (order) {
+          if (status) {
+            order.status = status.toString();
+          }
+          order.save();
+        } 
+      }
+    }
   }
 
   //   // Unique ID for item

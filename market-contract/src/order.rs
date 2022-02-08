@@ -8,34 +8,28 @@ use crate::*;
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Order {
-    pub requester_id: AccountId,   // Person B, requesting Person A's item
-    pub token_owner_id: AccountId, // Person A, holding the item
+    pub requester_id: AccountId,
+    pub requestee_id: AccountId,
+    pub transporter_id: Option<AccountId>,
     // pub nft_contract_id: String, // nft contract where token was minted... common-good
     pub token_id: String, // token Id of Person A's item
-    pub status: String,       // lifecycle status
-    pub instructions: String, // instructions on how to deliver
+    pub status: String,   // lifecycle status
+                          // pub instructions: String, // instructions on how to deliver
 }
 
-#[near_bindgen]
 impl Contract {
-    #[payable]
-    pub fn create_order(
-        &mut self,
-        requester_id: AccountId,
-        owner_id: AccountId,
-        token_id: String,
-    ) -> Order {
-        //assert that the user has attached exactly 1 yoctoNEAR (for security reasons)
-        assert_one_yocto();
+    pub fn create_order(&mut self, to: AccountId, from: AccountId, token_id: String) -> Order {
+        // TODO : enforce that the order creator has enough storage
+        // (to create this request as well as the transfer order)
 
-        let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
+        let requester_and_token_id = format!("{}{}{}", to, DELIMETER, token_id);
 
         let order = Order {
-            requester_id: requester_id.clone(),
-            token_owner_id: owner_id.clone(),
-            token_id: token_id,
+            requester_id: to.clone(),
+            requestee_id: from.clone(),
+            transporter_id: None,
+            token_id: token_id.clone(),
             status: "NEW".to_string(),
-            instructions: "email me".to_string(),
         };
 
         //insert the order, but first make sure it doesn't exist
@@ -48,11 +42,11 @@ impl Contract {
         // insert into more organized sets
 
         //get the orders by requester ID for the given requester. If there are none, we create a new empty set
-        let mut by_requester_set = self.by_requester.get(&requester_id).unwrap_or_else(|| {
+        let mut by_requester_set = self.by_requester.get(&to).unwrap_or_else(|| {
             UnorderedSet::new(
                 StorageKey::ByRequesterInner {
                     //we get a new unique prefix for the collection by hashing the owner
-                    account_id_hash: hash_account_id(&requester_id),
+                    account_id_hash: hash_account_id(&to),
                 }
                 .try_to_vec()
                 .unwrap(),
@@ -61,67 +55,83 @@ impl Contract {
         //insert the unique sale ID into the set
         by_requester_set.insert(&requester_and_token_id);
         //insert that set back into the collection for the owner
-        self.by_requester.insert(&requester_id, &by_requester_set);
+        self.by_requester.insert(&to, &by_requester_set);
 
         //get the orders by requester ID for the given requester. If there are none, we create a new empty set
-        let mut by_assignee_set = self.by_assignee.get(&owner_id).unwrap_or_else(|| {
+        let mut by_requestee_set = self.by_requestee.get(&from).unwrap_or_else(|| {
             UnorderedSet::new(
                 StorageKey::ByRequesterInner {
                     //we get a new unique prefix for the collection by hashing the owner
-                    account_id_hash: hash_account_id(&owner_id),
+                    account_id_hash: hash_account_id(&from),
                 }
                 .try_to_vec()
                 .unwrap(),
             )
         });
         //insert the unique sale ID into the set
-        by_assignee_set.insert(&requester_and_token_id);
+        by_requestee_set.insert(&requester_and_token_id);
         //insert that set back into the collection for the owner
-        self.by_assignee.insert(&owner_id, &by_assignee_set);
+        self.by_requestee.insert(&from, &by_requestee_set);
+
+        let order_log: EventLog = EventLog {
+            // Standard name ("nep171").
+            standard: "col1".to_string(),
+            // Version of the standard ("nft-1.0.0").
+            version: "order-1.0.0".to_string(),
+            // The data related with the event stored in a vector.
+            event: EventLogVariant::OrderLog(vec![OrderLog {
+                status: "NEW".to_string(),
+                order_id: requester_and_token_id,
+                token_id: token_id,
+                memo: None
+            }]),
+        };
+        env::log_str(&order_log.to_string());
+
         order
     }
 
-    #[payable]
-    pub fn accept_order(&mut self, requester_id: AccountId, token_id: String) -> String {
+    pub fn accept_order(
+        &mut self,
+        requester_id: AccountId,
+        token_id: String,
+        expected_status: String,
+        next_status: String,
+        transporter_id: Option<AccountId>
+    ) -> Order {
+
         let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
 
         let mut order = self
             .orders
             .get(&requester_and_token_id)
             .expect("No order for token from requester");
-        // TODO : Check that call was from "owner_id" and in new state
-        order.status = "ACCEPTED".to_string();
+
+        assert_eq!(
+            order.status, expected_status,
+            "Order's current status is not as expected"
+        );
+
+        order.status = next_status.clone();
+        order.transporter_id = transporter_id;
         self.orders.insert(&requester_and_token_id, &order);
-        // DO SOMETHING?
-        return order.instructions;
-    }
 
-    #[payable]
-    pub fn execute_order(&mut self, requester_id: AccountId, token_id: String) {
-        let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
+        let order_log: EventLog = EventLog {
+            // Standard name ("nep171").
+            standard: "col1".to_string(),
+            // Version of the standard ("nft-1.0.0").
+            version: "order-1.0.0".to_string(),
+            // The data related with the event stored in a vector.
+            event: EventLogVariant::OrderLog(vec![OrderLog {
+                status: next_status,
+                order_id: requester_and_token_id,
+                token_id: token_id,
+                memo: None
+            }]),
+        };
+        env::log_str(&order_log.to_string());
 
-        let mut order = self
-            .orders
-            .get(&requester_and_token_id)
-            .expect("No order for token from requester");
-        // TODO : Check that call was from "owner_id" and in ACCEPTED state
-        order.status = "IN_TRANSIT".to_string();
-        self.orders.insert(&requester_and_token_id, &order);
-        // SEND TOKEN TO COMMON GOOD
-    }
-
-    #[payable]
-    pub fn complete_order(&mut self, requester_id: AccountId, token_id: String) {
-        let requester_and_token_id = format!("{}{}{}", requester_id, DELIMETER, token_id);
-
-        let mut order = self
-            .orders
-            .get(&requester_and_token_id)
-            .expect("No order for token from requester");
-        order.status = "COMPLETED".to_string();
-        // TODO : Check that call was from "requester_id" and in IN_TRANSIT state
-        self.orders.insert(&requester_and_token_id, &order);
-        // UPDATE TOKEN OWNERSHIP TO REQUESTER
+        return order;
     }
 
     // //removes a order from the market.
@@ -311,48 +321,48 @@ impl Contract {
     check to see if it's authentic and there's no problems. If everything is fine, it will pay the accounts. If there's a problem,
     it will refund the buyer for the price.
 */
-// #[ext_contract(ext_self)]
-// trait ExtSelf {
-//     fn resolve_purchase(&mut self, buyer_id: AccountId, price: U128) -> Promise;
-// }
-
-#[cfg(all(test, not(target_arch = "wasm32")))]
-mod tests {
-    use near_sdk::test_utils::{accounts, VMContextBuilder};
-    use near_sdk::testing_env;
-
-    use super::*;
-
-    const MINT_STORAGE_COST: u128 = 5870000000000000000000;
-
-    fn get_context(predecessor_account_id: AccountId) -> VMContextBuilder {
-        let mut builder = VMContextBuilder::new();
-        builder
-            .current_account_id(accounts(0))
-            .signer_account_id(predecessor_account_id.clone())
-            .predecessor_account_id(predecessor_account_id);
-        builder
-    }
-
-    #[test]
-    fn test_create_order() {
-        let mut context = get_context(accounts(0));
-        testing_env!(context.build());
-        let mut contract = Contract::new(accounts(0).into());
-
-        testing_env!(context
-            .storage_usage(env::storage_usage())
-            .attached_deposit(MINT_STORAGE_COST)
-            .predecessor_account_id(accounts(0))
-            .build());
-
-        let token_id = "0".to_string();
-        let order = contract.create_order(accounts(0), token_id.clone());
-
-        // let requester_and_token_id = format!("{}{}{}", accounts(0), DELIMETER, token_id);
-        // assert_eq!(order.requester_id, accounts(0));
-        assert_eq!(order.token_id, token_id);
-        assert_eq!(order.status, "NEW".to_string());
-        // assert_eq!(order.instructions, "email_me".to_string());
-    }
+#[ext_contract(ext_self)]
+trait ExtSelf {
+    fn resolve_purchase(&mut self, buyer_id: AccountId, price: U128) -> Promise;
 }
+
+// #[cfg(all(test, not(target_arch = "wasm32")))]
+// mod tests {
+//     use near_sdk::test_utils::{accounts, VMContextBuilder};
+//     use near_sdk::testing_env;
+
+//     use super::*;
+
+//     const MINT_STORAGE_COST: u128 = 5870000000000000000000;
+
+//     fn get_context(predecessor_account_id: AccountId) -> VMContextBuilder {
+//         let mut builder = VMContextBuilder::new();
+//         builder
+//             .current_account_id(accounts(0))
+//             .signer_account_id(predecessor_account_id.clone())
+//             .predecessor_account_id(predecessor_account_id);
+//         builder
+//     }
+
+//     #[test]
+//     fn test_create_order() {
+//         let mut context = get_context(accounts(0));
+//         testing_env!(context.build());
+//         let mut contract = Contract::new(accounts(0).into());
+
+//         testing_env!(context
+//             .storage_usage(env::storage_usage())
+//             .attached_deposit(MINT_STORAGE_COST)
+//             .predecessor_account_id(accounts(0))
+//             .build());
+
+//         let token_id = "0".to_string();
+//         let order = contract.create_order(accounts(0), token_id.clone());
+
+//         // let requester_and_token_id = format!("{}{}{}", accounts(0), DELIMETER, token_id);
+//         // assert_eq!(order.requester_id, accounts(0));
+//         assert_eq!(order.token_id, token_id);
+//         assert_eq!(order.status, "NEW".to_string());
+//         // assert_eq!(order.instructions, "email_me".to_string());
+//     }
+// }

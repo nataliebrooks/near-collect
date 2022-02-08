@@ -8,18 +8,21 @@ use near_sdk::{
 };
 use std::collections::HashMap;
 
-// use crate::external::*;
+use crate::external::*;
 use crate::internal::*;
+use crate::events::*;
 // use crate::sale::*;
 use crate::order::*;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 
-// mod external;
+mod external;
 mod internal;
 // mod nft_callbacks;
 // mod sale;
 mod order;
+mod order_flow;
 mod order_views;
+mod events;
 // mod sale_views;
 
 //GAS constants to attach to calls
@@ -65,7 +68,8 @@ pub struct Contract {
     //keep track of all the Order IDs requested by an account ID
     pub by_requester: LookupMap<AccountId, UnorderedSet<RequesterAndTokenId>>,
 
-    pub by_assignee: LookupMap<AccountId, UnorderedSet<RequesterAndTokenId>>,
+    pub by_requestee: LookupMap<AccountId, UnorderedSet<RequesterAndTokenId>>,
+    pub by_transporter: LookupMap<AccountId, UnorderedSet<RequesterAndTokenId>>,
 
     // /*
     //     to keep track of the sales, we map the ContractAndTokenId to a Sale. 
@@ -90,8 +94,10 @@ pub enum StorageKey {
     Orders,
     ByRequester,
     ByRequesterInner { account_id_hash: CryptoHash },
-    ByAssignee,
-    ByAssigneeInner { account_id_hash: CryptoHash },
+    ByRequestee,
+    ByRequesteeInner { account_id_hash: CryptoHash },
+    ByTransporter,
+    ByTransporterInner { account_id_hash: CryptoHash },
     // Sales,
     // ByOwnerId,
     // ByOwnerIdInner { account_id_hash: CryptoHash },
@@ -119,7 +125,8 @@ impl Contract {
             //Storage keys are simply the prefixes used for the collections. This helps avoid data collision
             orders: UnorderedMap::new(StorageKey::Orders),
             by_requester: LookupMap::new(StorageKey::ByRequester),
-            by_assignee: LookupMap::new(StorageKey::ByAssignee),
+            by_requestee: LookupMap::new(StorageKey::ByRequestee),
+            by_transporter: LookupMap::new(StorageKey::ByTransporter),
             // sales: UnorderedMap::new(StorageKey::Sales),
             // by_owner_id: LookupMap::new(StorageKey::ByOwnerId),
             // by_nft_contract_id: LookupMap::new(StorageKey::ByNFTContractId),

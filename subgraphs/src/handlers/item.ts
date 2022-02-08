@@ -1,5 +1,5 @@
-import { json, log, near } from "@graphprotocol/graph-ts";
-import { Item, Log } from "../../generated/schema";
+import { near, JSONValue, json, ipfs, log } from "@graphprotocol/graph-ts";
+import { Token, User } from "../../generated/schema";
 
 export function handleReceipt(receipt: near.ReceiptWithOutcome): void {
   const actions = receipt.receipt.actions;
@@ -26,71 +26,101 @@ function handleAction(
   }
 
   const functionCall = action.toFunctionCall();
+  // const ipfsHash =
+  //   "bafybeiew2l6admor2lx6vnfdaevuuenzgeyrpfle56yrgse4u6nnkwrfeu";
 
-  // change the methodName here to the methodName emitting the log in the contract
   if (functionCall.methodName == "nft_mint") {
-    // Unique ID for item
-    const receiptId = receipt.id.toHexString();
-    let item = new Item(`${receiptId}`);
-    // DO SOMETHING
+    // item (NFT) has been minted on common good
+    // we need to reflect that here to be easily queryable
+    // but we will not expose the owner or any fine details
+
+    if (outcome.logs[0] != null) {
+      // grab the event log and parse into an object
+      const parsed = outcome.logs[0].toString().replace("EVENT_JSON:", "");
+      log.info("outcomeLog {}", [parsed]);
+      const jsonData = json.try_fromString(parsed);
+      const jsonObject = jsonData.value.toObject();
+
+      const eventData = jsonObject.get("data");
+      if (eventData) {
+        const eventArray: JSONValue[] = eventData.toArray();
+
+        const data = eventArray[0].toObject();
+        const tokenIds = data.get("token_ids");
+        const ownerId = data.get("owner_id");
+        const rootId = data.get("root_id");
+        if (!tokenIds || !ownerId) return;
+
+        const ids: JSONValue[] = tokenIds.toArray();
+        const tokenId = ids[0].toString();
+
+        let token = new Token(tokenId);
+        token.tokenId = tokenId;
+        // Set token root id if provided (for derivatives created by Distributor)
+        token.rootId = rootId ? rootId.toString() : tokenId;
+
+        token.ownerId = ownerId.toString();
+        token.owner = ownerId.toString();
+
+        token.creatorId = ownerId.toString();
+        token.creator = ownerId.toString();
+
+        // token.image = ipfsHash + "/" + tokenId + ".png";
+        // const metadata = ipfsHash + "/" + tokenId + ".json";
+        // token.metadata = metadata;
+
+        // Set status depending on mint from producer or
+        // derivative mint from distributor
+        token.status = rootId ? "NEEDS_LABELLING" : "NEW";
+        token.category = "uncategorized";
+        token.labels = ["unlabelled"];
+
+        let user = User.load(ownerId.toString());
+        if (!user) {
+          user = new User(ownerId.toString());
+        }
+
+        token.save();
+        user.save();
+      }
+    }
+  } else if (functionCall.methodName == "nft_update") {
+    // item (NFT) has been updated by an organizer
+    // we need to reflect those changes here
+
+    if (outcome.logs[0] != null) {
+      // grab the event log and parse into an object
+      const parsed = outcome.logs[0].toString().replace("EVENT_JSON:", "");
+      log.info("outcomeLog {}", [parsed]);
+      const jsonData = json.try_fromString(parsed);
+      const jsonObject = jsonData.value.toObject();
+
+      const eventData = jsonObject.get("data");
+      if (eventData) {
+        const eventArray: JSONValue[] = eventData.toArray();
+
+        const data = eventArray[0].toObject();
+        const tokenIds = data.get("token_ids");
+        if (!tokenIds) return;
+
+        const ids: JSONValue[] = tokenIds.toArray();
+        const tokenId = ids[0].toString();
+
+        let token = Token.load(tokenId);
+        if (!token) return;
+
+        const category = data.get("category");
+        if (category) {
+          token.category = category.toString();
+        }
+
+        const labels = data.get("labels");
+        if (labels) {
+          const lbls: JSONValue[] = labels.toArray();
+          token.labels = lbls.map<string>((data: JSONValue) => data.toString());        
+        }
+        token.save();
+      }
+    }
   }
-
-  //   item.signerId = receipt.signerId; // orig owner
-  //   item.rootId = receiptId;
-  //   item.status = "NEW";
-  //   item.category = "uncategorized";
-  //   item.labels = [];
-
-  //   // Do I even care about anything else?
-
-  //   // https://github.com/decentraland/marketplace/blob/master/indexer/src/modules/nft/index.ts
-
-  // // if function call is update
-  // // item.load( unHex)
-  
-
-    
-  //   // Maps the JSON formatted log to the LOG entity
-  //   // let logs = new Log(`${receiptId}`);
-  //   // if (outcome.logs[0] != null) {
-  //   //   logs.id = receipt.signerId;
-  //   //   const parsed = outcome.logs[0].toString();
-
-  //   //   log.info("outcomeLog {}", [parsed]);
-
-  //   //   const jsonData = json.try_fromString(parsed);
-  //   //   const jsonObject = jsonData.value.toObject();
-
-  //   //   const eventData = jsonObject.get("EVENT_JSON");
-
-  //   //   if (eventData) {
-  //   //     const data = eventData.toObject();
-  //   //     const tokenId = data.get("token_id");
-  //   //     const receiverId = data.get("receiver_id");
-  //   //     const status = data.get("status");
-
-  //   //     if (status && status.toString() == "NEW") {
-  //   //       item.status = status.toString();
-  //   //       item.category = "uncategorized";
-  //   //       item.labels = [];
-  //   //     }
-
-  //   //     if (tokenId) {
-  //   //       logs.tokenId = tokenId.toString();
-  //   //     }
-  //   //     if (receiverId) {
-  //   //       logs.receiverId = receiverId.toString();
-  //   //     }
-  //   //   }
-  //   //   logs.save();
-
-  //   //   item.log.push(logs.id);
-  //   // } else {
-  //   //   log.info("Not processed - FunctionCall is: {}", [
-  //   //     functionCall.methodName,
-  //   //   ]);
-  //   // }
-
-  //   item.save();
-  // }
 }

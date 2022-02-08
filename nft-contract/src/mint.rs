@@ -8,6 +8,7 @@ impl Contract {
         token_id: TokenId, // for Producers, this should be AccountId + Timestamp?, for Distributors, this should be Account Id + Original + Timestamp?
         metadata: TokenMetadata,
         receiver_id: AccountId,
+        root_id: Option<TokenId>,
         perpetual_royalties: Option<HashMap<AccountId, u32>>
     ) {
         //measure the initial storage being used on the contract
@@ -60,8 +61,9 @@ impl Contract {
                 owner_id: token.owner_id.to_string(),
                 // Vector of token IDs that were minted.
                 token_ids: vec![token_id.to_string()],
+                root_id: root_id,
                 // An optional memo to include.
-                memo: Some(r#"{"status":"NEW"}"#.to_string())
+                memo: None
             }]),
         };
         env::log_str(&nft_mint_log.to_string());
