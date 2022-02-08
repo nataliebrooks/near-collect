@@ -8,8 +8,10 @@ module.exports = {
       distributor: colors.orange,
       organizer: colors.yellow,
       transporter: colors.green,
+      green: colors.green,
       vendor: colors.blue,
       warehouse: colors.purple,
+      black: colors.black,
       white: colors.white,
       grey: colors.grey,
       slate: colors.slate

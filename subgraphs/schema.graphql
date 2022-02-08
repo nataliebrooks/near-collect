@@ -1,15 +1,24 @@
-type Item @entity {
+type User @entity {
   id: ID!
-  signerId: String!
+  tokensInPossession: [Token!]! @derivedFrom(field: "owner")
+  tokensCreated: [Token!]! @derivedFrom(field: "creator")
+}
+
+type Token @entity {
+  id: ID!
+  owner: User!
+  ownerId: String!
+  creator: User!
+  creatorId: String!
+  tokenId: String!
   rootId: String!
-  parentId: String!
+  image: String!
+  metadata: String!
   status: ItemStatus!
-  title: String
-  description: String
-  media: String
   category: Category!
-  label: [Label!]
-  log: [Log!]!
+  labels: [String!]
+  # derivatives: [String!] @derivedFrom(field: "rootId")
+  # log: [Log!]!
 }
 
 type Log @entity {
@@ -20,9 +29,8 @@ type Log @entity {
 
 type Order @entity {
   id: ID!
-  requesterId: String!
-  requesteeId: String!
-  item: Item!
+  orderId: String!
+  tokenId: String!
   status: OrderStatus!
 }
 
@@ -33,10 +41,14 @@ type Order @entity {
 
 enum ItemStatus @entity {
   NEW
+  NEEDS_LABELLING
 }
 
 enum OrderStatus @entity {
   NEW
+  NEEDS_TRANSPORT
+  IN_TRANSIT
+  DELIVERED
 }
 
 enum Category @entity {
