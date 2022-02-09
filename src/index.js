@@ -10,9 +10,11 @@ import {
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import * as nearAPI from "near-api-js";
 
+import { get } from "./utils/storage";
+
 // Routes //
 import App from "./App";
-import SignIn from "./routes/SignIn";
+import { SignIn } from "./routes/SignIn";
 import Start from "./routes/Start";
 import ProducerApp from "./routes/ProducerApp";
 import DistributorApp from "./routes/DistributorApp";
@@ -33,13 +35,16 @@ import * as Role from "./utils/roles";
 import DistributorDashboard from "./routes/DistributorDashboard";
 import ProducerDashboard from "./routes/ProducerDashboard";
 
+const LOCAL_KEYS = "__LOCAL_KEYS";
+
 // Initializing contract
 async function initContract() {
-  const nearConfig = getConfig(process.env.NEAR_ENV || "testnet");
+  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+  const nearConfig = getConfig(process.env.NEAR_ENV || "testnet", keyStore);
 
   // create a keyStore for signing transactions using the user's key
   // which is located in the browser local storage after user logs in
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+  
 
   // Initializing connection to the NEAR testnet
   const near = await nearAPI.connect({ keyStore, ...nearConfig });
@@ -62,16 +67,16 @@ async function initContract() {
     nearConfig.contractName,
     {
       // View methods are read-only – they don't modify the state, but usually return some value
-      viewMethods: [""],
+      viewMethods: ["get_guest"],
       // Change methods can modify the state, but you don't receive the returned value when called
-      changeMethods: ["nft_mint"],
+      changeMethods: ["nft_mint", "create_guest"],
       // Sender is the account ID to initialize transactions.
       // getAccountId() will return empty string if user is still unauthorized
       sender: walletConnection.getAccountId(),
     }
   );
 
-  return { contract, currentUser, nearConfig, walletConnection };
+  return { contract, currentUser, nearConfig, walletConnection, near };
 }
 
 // Initializing client to common-good subgraph
@@ -81,7 +86,7 @@ const client = new ApolloClient({
 });
 
 window.nearInitPromise = initContract().then(
-  ({ contract, currentUser, nearConfig, walletConnection }) => {
+  ({ contract, currentUser, nearConfig, walletConnection, near }) => {
     ReactDOM.render(
       <ApolloProvider client={client}>
         <BrowserRouter>
@@ -89,19 +94,15 @@ window.nearInitPromise = initContract().then(
             <Route
               path="/login"
               element={
-                <SignIn
-                  contract={contract}
-                  nearConfig={nearConfig}
-                  wallet={walletConnection}
-                />
+                <SignIn near={near} contract={contract} wallet={walletConnection} />
               }
             />
             <Route
               path="/"
               element={
-                // <RequireAuth currentUser={currentUser}>
+                <RequireAuth currentUser={currentUser}>
                   <App currentUser={currentUser} wallet={walletConnection} />
-                // </RequireAuth>
+                </RequireAuth>
               }
             >
               <Route index element={<Start />} />
@@ -121,7 +122,12 @@ window.nearInitPromise = initContract().then(
               <Route path="warehouse" element={<WarehouseApp />} />
               <Route path="camera" element={<Camera />} />
               <Route path="question" element={<Question />} />
-              <Route path="submit" element={<Submit contract={contract} currentUser={currentUser} />} />
+              <Route
+                path="submit"
+                element={
+                  <Submit contract={contract} currentUser={currentUser} />
+                }
+              />
               <Route path="items" element={<Items />} />
               <Route path="orders" element={<Orders />} />
               {/* <Route path="item" element={<Item />} />
@@ -139,11 +145,12 @@ window.nearInitPromise = initContract().then(
 
 function RequireAuth({ currentUser, children }) {
   let location = useLocation();
+  const { signedIn } = get(LOCAL_KEYS);
 
-  if (!currentUser) {
+  if (currentUser || signedIn) {
+    return children;
+  } else {
     // Redirect to login page
     return <Navigate to="/login" state={{ from: location }} replace />;
-  } else {
-    return children;
   }
 }

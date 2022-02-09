@@ -1,36 +1,114 @@
-import React from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import * as nearAPI from "near-api-js";
+import { generateSeedPhrase, parseSeedPhrase } from "near-seed-phrase";
 
-export default function SignIn({ contract, nearConfig, wallet }) {
-  let navigate = useNavigate();
-  let location = useLocation();
+import { get, set } from "../utils/storage";
+import { createGuestAccount } from "../utils/near";
+import getConfig from "../config.js";
 
-  let from = location.state?.from?.pathname || "/";
+const LOCAL_KEYS = "__LOCAL_KEYS";
+
+const { Account, KeyPair } = nearAPI;
+
+export const SignIn = ({ near, contract }) => {
+  const [connected, setConnected] = useState(false);
+  const [username, setUsername] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [keys, setKeys] = useState({});
+
+  const loadKeys = () => {
+    const {
+      seedPhrase,
+      accessAccountId,
+      accessPublic,
+      accessSecret,
+      signedIn,
+    } = get(LOCAL_KEYS);
+    if (!accessAccountId) return;
+    const { secretKey } = parseSeedPhrase(seedPhrase);
+    setKeys({
+      seedPhrase,
+      accessAccountId,
+      accessPublic,
+      accessSecret: secretKey,
+      signedIn,
+    });
+  };
 
   const signIn = () => {
-    wallet
-      .requestSignIn(
-        {
-          contractId: nearConfig.contractName,
-          methodNames: [contract.get_orders_by_requester.name],
-        }, //contract requesting access
-        "Collect", //optional name
-        null, //optional URL to redirect to if the sign in was successful
-        null //optional URL to redirect to if the sign in was NOT successful
-      )
-      .then(() => navigate(from, { replace: true })); // Or maybe I use the above...
+    // if (wallet === undefined)
+    //   alert("Problem connecting to NEAR. Do you have Javascript installed?");
+    // wallet.requestSignIn(
+    //   {
+    //     contractId: contract,
+    //     methodNames: [contract.get_orders_by_requester.name],
+    //   }, //contract requesting access
+    //   "Collect", //optional name
+    //   null,
+    //   null
+    // );
   };
 
-  const continueAsGuest = () => {
+  const continueAsGuest = async () => {
+    // Check username is populated
+    // TODO: replace with client side validation, disable button
+    if (username === "") {
+      return alert("Please enter a username");
+    }
 
+    // Check username is available
+
+    const { seedPhrase, publicKey, secretKey } = generateSeedPhrase();
+    const guestAccount = createGuestAccount(near, KeyPair.fromString(secretKey));
+    const account_id = username + "." + contract.contractId;
+    const contractAccount = new Account(near.connection, contract);
+    try {
+      await contractAccount.viewFunction(contract, "get_account", {
+        account_id,
+      });
+      return alert("username taken");
+    } catch (e) {
+      console.warn(e);
+    }
+    setLoading(true);
+    
+    try {
+      await contractAccount.functionCall("create_guest", {
+        account_id,
+        public_key: publicKey.toString(),
+      });
+    } catch (e) {
+      setLoading(false);
+      return alert("Error creating guest account");
+    }
+    const keys = {
+      seedPhrase,
+      accessAccountId: account_id,
+      accessPublic: publicKey.toString(),
+      accessSecret: secretKey,
+      signedIn: true,
+    };
+    set(LOCAL_KEYS, keys);
+    setKeys(keys);
+    setLoading(false);
+    return null;
   };
+
+  useEffect(() => {
+    if (keys === {}) loadKeys();
+    // if (wallet === undefined) return;
+    // else if (wallet.isSignedIn()) setConnected(true);
+    // // navigate
+    // else if (keys && keys.signedIn) setConnected(true);
+  }, []);
 
   return (
     <>
       <main className="flex flex-col justify-end h-screen w-full bg-white text-black">
         <div className="flex flex-col justify-end h-1/2 pl-16">
-        <svg
+          <svg
             height="10"
             viewBox="0 0 76 20"
             width="45.6"
@@ -45,7 +123,6 @@ export default function SignIn({ contract, nearConfig, wallet }) {
           </svg>
           <h1 className="text-5xl font-bold text-green-600">collect</h1>
           <h6 className="text-xl">for the common good.</h6>
-
         </div>
         <div className="flex justify-end items-center h-1/2">
           <div className="flex flex-col pr-8">
@@ -57,26 +134,29 @@ export default function SignIn({ contract, nearConfig, wallet }) {
                 Log in.
               </button>
             </div>
-
-            <Link
-              to="/"
+            <div
               onClick={continueAsGuest}
               className="bg-transparent hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent rounded"
             >
               Continue as guest.
-            </Link>
+            </div>
+            <input
+              placeholder="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </div>
         </div>
       </main>
     </>
   );
-}
+};
 
 SignIn.propTypes = {
   nearConfig: PropTypes.shape({
     contractName: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
   wallet: PropTypes.shape({
     requestSignIn: PropTypes.func.isRequired,
-  }).isRequired,
+  }),
 };

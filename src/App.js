@@ -33,11 +33,11 @@ App.propTypes = {
   currentUser: PropTypes.shape({
     accountId: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
   wallet: PropTypes.shape({
     requestSignIn: PropTypes.func.isRequired,
     signOut: PropTypes.func.isRequired,
-  }).isRequired,
+  }),
 };
 
 export default App;

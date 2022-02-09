@@ -1,12 +1,13 @@
-const CONTRACT_NAME = process.env.CONTRACT_NAME || 'common-good.frontier.test.near';
+const CONTRACT_NAME = process.env.CONTRACT_NAME || 'common-good.collect.testnet';
 
-function getConfig(env) {
+function getConfig(env, keyStore) {
   switch(env) {
     case 'mainnet':
       return {
         networkId: 'mainnet',
         nodeUrl: 'https://rpc.mainnet.near.org',
         contractName: CONTRACT_NAME,
+        keyStore,
         walletUrl: 'https://wallet.near.org',
         helperUrl: 'https://helper.mainnet.near.org'
       };
@@ -19,6 +20,7 @@ function getConfig(env) {
         networkId: 'testnet',
         nodeUrl: 'https://rpc.testnet.near.org',
         contractName: CONTRACT_NAME,
+        keyStore,
         walletUrl: 'https://wallet.testnet.near.org',
         helperUrl: 'https://helper.testnet.near.org'
       };
@@ -27,6 +29,7 @@ function getConfig(env) {
         networkId: 'betanet',
         nodeUrl: 'https://rpc.betanet.near.org',
         contractName: CONTRACT_NAME,
+        keyStore,
         walletUrl: 'https://wallet.betanet.near.org',
         helperUrl: 'https://helper.betanet.near.org'
       };
@@ -36,7 +39,8 @@ function getConfig(env) {
         nodeUrl: 'http://127.0.0.1:57583',
         keyPath: '/Users/ebraem/.neartosis/2022-01-31T17.52.46/validator-key.json',
         walletUrl: 'http://127.0.0.1:57631',
-        contractName: CONTRACT_NAME
+        contractName: CONTRACT_NAME,
+        keyStore,
       };
     case 'test':
     case 'ci':
@@ -44,6 +48,7 @@ function getConfig(env) {
         networkId: 'shared-test',
         nodeUrl: 'https://rpc.ci-testnet.near.org',
         contractName: CONTRACT_NAME,
+        keyStore,
         masterAccount: 'test.near'
       };
     case 'ci-betanet':
@@ -51,6 +56,7 @@ function getConfig(env) {
         networkId: 'shared-test-staging',
         nodeUrl: 'https://rpc.ci-betanet.near.org',
         contractName: CONTRACT_NAME,
+        keyStore,
         masterAccount: 'test.near'
       };
     default:

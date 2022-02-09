@@ -4,7 +4,7 @@ use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
 use near_sdk::json_types::{Base64VecU8, U128};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
-    env, near_bindgen, AccountId, Balance, CryptoHash, PanicOnDefault, Promise, PromiseOrValue,
+    env, near_bindgen, AccountId, Balance, CryptoHash, PanicOnDefault, Promise, PromiseOrValue, PublicKey
 };
 
 use crate::internal::*;
@@ -15,6 +15,7 @@ pub use crate::nft_core::*;
 pub use crate::approval::*;
 pub use crate::royalty::*;
 pub use crate::events::*;
+pub use crate::guests::*;
 
 mod internal;
 mod approval; 
@@ -25,6 +26,7 @@ mod update;
 mod nft_core; 
 mod royalty; 
 mod events;
+mod guests;
 
 /// This spec can be treated like a version of the standard.
 pub const NFT_METADATA_SPEC: &str = "nft-1.0.0";
@@ -39,6 +41,7 @@ pub struct Contract {
     pub tokens_by_id: LookupMap<TokenId, Token>, 
     pub token_metadata_by_id: UnorderedMap<TokenId, TokenMetadata>,
     pub metadata: LazyOption<NFTContractMetadata>,
+    pub guests: LookupMap<PublicKey, Guest>
 }
 
 #[derive(BorshSerialize)]
@@ -51,6 +54,7 @@ pub enum StorageKey {
     TokensPerType,
     TokensPerTypeInner { token_type_hash: CryptoHash },
     TokenTypesLocked,
+    Guests
 }
 
 #[near_bindgen]
@@ -96,6 +100,7 @@ impl Contract {
                 StorageKey::NFTContractMetadata.try_to_vec().unwrap(),
                 Some(&metadata),
             ),
+            guests: LookupMap::new(StorageKey::Guests.try_to_vec().unwrap()),
         };
         this
     }
