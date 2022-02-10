@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Camera as ReactCamera, CameraType } from "react-camera-pro";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Button = styled.button`
@@ -71,6 +71,8 @@ const Camera = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState(null);
   const camera = useRef(null);
+  let navigate = useNavigate();
+
   return (
     <div className="fixed w-full h-screen z-10">
       <ReactCamera
@@ -88,6 +90,7 @@ const Camera = () => {
             if (camera.current) {
               const photo = camera.current.takePhoto();
               setImage(photo);
+              // navigate("/question", { state: { image: photo }});
             }
           }}
         />

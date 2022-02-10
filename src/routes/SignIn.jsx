@@ -1,25 +1,23 @@
 import React from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-export default function SignIn({ contract, nearConfig, wallet }) {
-  let navigate = useNavigate();
+export default function SignIn({ contract, wallet }) {
   let location = useLocation();
 
   let from = location.state?.from?.pathname || "/";
 
-  const signIn = () => {
-    wallet
+  const signIn = async () => {
+    await wallet
       .requestSignIn(
         {
-          contractId: nearConfig.contractName,
-          methodNames: [contract.get_orders_by_requester.name],
+          contractId: contract.contractId,
+          methodNames: ["nft_mint"],
         }, //contract requesting access
-        "Collect", //optional name
-        null, //optional URL to redirect to if the sign in was successful
-        null //optional URL to redirect to if the sign in was NOT successful
+        "Collect",
+        "http://localhost:1234" + from,
+        "http://localhost:1234/login"
       )
-      .then(() => navigate(from, { replace: true })); // Or maybe I use the above...
   };
 
   const continueAsGuest = () => {
@@ -72,11 +70,11 @@ export default function SignIn({ contract, nearConfig, wallet }) {
   );
 }
 
-SignIn.propTypes = {
-  nearConfig: PropTypes.shape({
-    contractName: PropTypes.string.isRequired,
-  }).isRequired,
-  wallet: PropTypes.shape({
-    requestSignIn: PropTypes.func.isRequired,
-  }).isRequired,
-};
+// SignIn.propTypes = {
+//   contract: PropTypes.shape({
+//     contractName: PropTypes.string.isRequired,
+//   }).isRequired,
+//   wallet: PropTypes.shape({
+//     requestSignIn: PropTypes.func.isRequired,
+//   }).isRequired,
+// };
