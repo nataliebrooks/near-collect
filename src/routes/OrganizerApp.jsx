@@ -35,13 +35,21 @@ const Item = ({ item }) => {
       <div className="flex flex-1 flex-col justify-between m-2 shadow-lg rounded-lg">
         <div className="flex justify-center flex-1 overflow-hidden">
           <img
-            className="w-full h-full bg-cover object-cover object-center"
+            className="w-full h-full bg-cover object-cover object-center rounded-t-lg"
             src={item.media}
           />
         </div>
-        <div className="flex justify-between p-4">
-          <p>{item.description}</p>
-          <button onClick={updateItem}>submit</button>
+        <div className="flex flex-col justify-between p-4">
+          <textarea
+            className="w-full px-4 py-2 text-gray-700 border-2 focus:outline-none"
+            rows="4"
+            placeholder="Label the item(s) in the image with a comma separate list, i.e two, white, iphone charger"
+            value={answer}
+            onChange={({ target }) => setAnswer(target.value)}
+          />
+          <div className="flex justify-end mt-2">
+            <button onClick={updateItem} className="flex-1 bg-transparent shadow-sm hover:shadow hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent">submit</button>
+          </div>
         </div>
       </div>
     </>

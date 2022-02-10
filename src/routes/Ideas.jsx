@@ -42,10 +42,13 @@ function loadItems() {
           description: "Users could itemize their possessions and create tools to facilitate personal organization or community initiatives (trading, borrowing...)"
         },
         {
-          description: "Common, wasted items could be identified and corporations can be held responsible for their wasteful products"
+          description: "Especially common items could be identified and corporations could be held responsible for their wasteful products"
         },
         {
           description: "A closed loop of packaging able to be reused by corporations"
+        },
+        {
+          description: "Storage for seasonal items (offering your christmas decorations after the holidays then requesting them back before the holidays)"
         },
         {
           description: "Data projects tracking where our waste goes"

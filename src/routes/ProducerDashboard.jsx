@@ -18,7 +18,7 @@ export default function ProducerDashboard() {
             </p>
           </Link>
         </div>
-        <footer className="flex flex-1 flex-col justify-start pt-32 pb-16 px-4">
+        <footer className="flex flex-1 flex-col justify-start pt-16 pb-16 px-4">
           <div className="pl-12 pb-4">
             <p>
               Or click below to view orders from distributors, or the piles

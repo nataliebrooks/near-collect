@@ -50,6 +50,7 @@ export default function SignIn({ contract, wallet }) {
             <div className="mb-2">
               <button
                 onClick={signIn}
+                disabled
                 className="text-left bg-transparent shadow-lg hover:shadow-sm  hover:bg-green-500 py-2 px-4 border-2 border-green-500 hover:border-transparent"
               >
                 Log in.
@@ -58,7 +59,7 @@ export default function SignIn({ contract, wallet }) {
 
             <Link
               to="/"
-              onClick={continueAsGuest}
+              // onClick={continueAsGuest}
               className="bg-transparent shadow-lg hover:shadow-sm  hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent"
             >
               Continue as guest.

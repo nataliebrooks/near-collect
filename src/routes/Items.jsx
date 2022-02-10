@@ -56,11 +56,11 @@ const renderListItem = (item) => {
   return <Item item={item} />
 }
 
-const Items = () => {
+const Items = ({ title }) => {
   return (
     <main className="flex flex-col justify-start h-full w-full">
       <div className="flex flex-1 flex-col justify-start pt-32 pb-16 pl-16 pr-4">
-        <h1 className="text-5xl font-bold text-green-600">piles</h1>
+        <h1 className="text-5xl font-bold text-green-600">{title}</h1>
       </div>
       <List loadData={loadItems} renderListItem={renderListItem} />
     </main>

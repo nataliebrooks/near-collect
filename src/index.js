@@ -103,20 +103,20 @@ window.nearInitPromise = initContract().then(
             <Route
               path="/"
               element={
-                <RequireAuth currentUser={currentUser}>
+                // <RequireAuth currentUser={currentUser}>
                   <App currentUser={currentUser} wallet={walletConnection} />
-                </RequireAuth>
+                // </RequireAuth>
               }
             >
               <Route index element={<Start />} />
               <Route path="producer" element={<ProducerApp />}>
                 <Route index element={<ProducerDashboard />} />
-                <Route path="piles" element={<Items />} />
+                <Route path="piles" element={<Items title="piles" />} />
                 <Route path="orders" element={<Orders />} />
               </Route>
               <Route path="distributor" element={<DistributorApp />}>
                 <Route index element={<DistributorDashboard />} />
-                <Route path="piles" element={<Items />} />
+                <Route path="piles" element={<Items title="piles" />} />
                 <Route path="orders" element={<Orders />} />
               </Route>
               <Route path="organizer" element={<OrganizerApp />} />
@@ -130,7 +130,7 @@ window.nearInitPromise = initContract().then(
                 </Route>
               <Route path="storage" element={<StorageApp />}>
                 <Route index element={<StorageDashboard />} />
-                <Route path="items" element={<Items />} />
+                <Route path="items" element={<Items title="items" />} />
               </Route>
               <Route path="camera" element={<Camera />} />
               <Route path="question" element={<Question />} />

@@ -2,21 +2,7 @@ const colors = require('tailwindcss/colors')
 
 module.exports = {
   content: ["./src/**/*.{html,js,jsx}"],
-  theme: {
-    colors: {
-      producer: colors.red,
-      distributor: colors.orange,
-      organizer: colors.yellow,
-      transporter: colors.green,
-      green: colors.green,
-      vendor: colors.blue,
-      warehouse: colors.purple,
-      black: colors.black,
-      white: colors.white,
-      grey: colors.grey,
-      slate: colors.slate
-    }
-  },
+  theme: {},
   plugins: [
     require('@tailwindcss/forms')
   ],
