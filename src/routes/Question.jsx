@@ -5,32 +5,35 @@ import { Link, useLocation } from "react-router-dom";
 export default function Question({ contract, currentUser }) {
   const [answer, setAnswer] = useState("");
   const location = useLocation();
-  let image;
+  let image = "https://picsum.photos/332/720";
 
   if (location && location.state) {
     image = location.state.image;
   }
 
   return (
-    <main className="flex flex-col justify-between h-screen w-full p-8">
-      <section className="flex-1 content-center ">
-        <img className="h-4/6 shadow-inner bg-cover" src={image} />
-        <h2>
-          What is in this picture? <br /> Please be as descriptive as possible.
-          (ie. quality, quantity...)
-        </h2>
-        <input
-          className="appearance-none block bg-slate-200 text-slate-700 pxborder rounded leading-tight focus:outline-none focus:bg-white"
-          id={"input_"} // This could be dynamic, question underscored
-          type="text"
-          placeholder=""
+    <main className="flex flex-1 flex-col h-screen justify-between">
+      <div className="flex justify-center flex-1 overflow-hidden">
+        <img className="w-full h-full bg-cover object-cover object-center" src={image} />
+      </div>
+      <div className="flex flex-col p-4 border-2">
+        <p>Please describe what items are in the image</p>
+        <textarea
+          className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none"
+          rows="4"
+          placeholder="Two hats, an iphone charger, a water bottle..."
           value={answer}
           onChange={({ target }) => setAnswer(target.value)}
         />
-        <Link to="/submit" state={{ image, answer }}>
-          Next
-        </Link>
-      </section>
+        <div className="flex justify-between">
+          <Link to="/camera">
+            Retake picture
+          </Link>
+          <Link to="/submit" state={{ image, answer }}>
+            Next
+          </Link>
+        </div>
+      </div>
     </main>
   );
 }

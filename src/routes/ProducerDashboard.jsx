@@ -10,7 +10,7 @@ export default function ProducerDashboard() {
         <div className="grow flex p-4">
           <Button
             to="/camera"
-            className={`bg-producer-300 shadow-2xl hover:bg-producer-400 hover:shadow-xl hover:-translate-y-1`}
+            className={`w-full bg-producer-300 shadow-2xl hover:bg-producer-400 hover:shadow-xl hover:-translate-y-1`}
           >
               <h1 className="text-xl font-semibold">give to the common good</h1>
           </Button>

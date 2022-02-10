@@ -1,4 +1,4 @@
-const CONTRACT_NAME = process.env.CONTRACT_NAME || 'common-good.frontier.test.near';
+const CONTRACT_NAME = process.env.CONTRACT_NAME || 'common-good.collect.testnet';
 
 function getConfig(env) {
   switch(env) {

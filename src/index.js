@@ -121,7 +121,7 @@ window.nearInitPromise = initContract().then(
               <Route path="warehouse" element={<WarehouseApp />} />
               <Route path="camera" element={<Camera />} />
               <Route path="question" element={<Question />} />
-              <Route path="submit" element={<Submit contract={contract} currentUser={currentUser} />} />
+              <Route path="submit" element={<Submit />} />
               <Route path="items" element={<Items />} />
               <Route path="orders" element={<Orders />} />
               {/* <Route path="item" element={<Item />} />
