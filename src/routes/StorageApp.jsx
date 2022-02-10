@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Outlet } from "react-router-dom";
 
-export default function VendorApp() {
+export default function StorageApp() {
   return <Outlet />;
 }
 
-VendorApp.propTypes = {};
+StorageApp.propTypes = {};

@@ -17,14 +17,15 @@ import Start from "./routes/Start";
 import ProducerApp from "./routes/ProducerApp";
 import DistributorApp from "./routes/DistributorApp";
 import OrganizerApp from "./routes/OrganizerApp";
-import TransporterApp from "./routes/TransporterApp";
+import TransporterApp from "./routes/TransporterDashboard";
 import VendorApp from "./routes/VendorApp";
-import WarehouseApp from "./routes/WarehouseApp";
+import StorageApp from "./routes/StorageApp";
 import Camera from "./routes/Camera";
 import Question from "./routes/Question";
 import Submit from "./routes/Submit";
 import Items from "./routes/Items";
 import Orders from "./routes/Orders";
+import Ideas from "./routes/Ideas";
 import NotFound from "./routes/NotFound";
 
 // Config
@@ -32,6 +33,9 @@ import getConfig from "./config.js";
 import * as Role from "./utils/roles";
 import DistributorDashboard from "./routes/DistributorDashboard";
 import ProducerDashboard from "./routes/ProducerDashboard";
+import TransporterDashboard from "./routes/TransporterDashboard";
+import StorageDashboard from "./routes/StorageDashboard";
+import VendorDashboard from "./routes/VendorDashboard";
 
 // Initializing contract
 async function initContract() {
@@ -107,23 +111,30 @@ window.nearInitPromise = initContract().then(
               <Route index element={<Start />} />
               <Route path="producer" element={<ProducerApp />}>
                 <Route index element={<ProducerDashboard />} />
-                <Route path="items" element={<Items />} />
+                <Route path="piles" element={<Items />} />
                 <Route path="orders" element={<Orders />} />
               </Route>
               <Route path="distributor" element={<DistributorApp />}>
                 <Route index element={<DistributorDashboard />} />
-                <Route path="items" element={<Items />} />
+                <Route path="piles" element={<Items />} />
                 <Route path="orders" element={<Orders />} />
               </Route>
               <Route path="organizer" element={<OrganizerApp />} />
-              <Route path="transporter" element={<TransporterApp />} />
-              <Route path="vendor" element={<VendorApp />} />
-              <Route path="warehouse" element={<WarehouseApp />} />
+              <Route path="transporter" element={<TransporterApp />}>
+                <Route index element={<TransporterDashboard />} />
+                <Route path="orders" element={<Orders />} />
+              </Route>
+              <Route path="vendor" element={<VendorApp />} >
+              <Route index element={<VendorDashboard />} />
+                <Route path="ideas" element={<Ideas />} />
+                </Route>
+              <Route path="storage" element={<StorageApp />}>
+                <Route index element={<StorageDashboard />} />
+                <Route path="items" element={<Items />} />
+              </Route>
               <Route path="camera" element={<Camera />} />
               <Route path="question" element={<Question />} />
               <Route path="submit" element={<Submit />} />
-              <Route path="items" element={<Items />} />
-              <Route path="orders" element={<Orders />} />
               {/* <Route path="item" element={<Item />} />
               <Route path="order" element={<Order />} />
               <Route path="table" element={<Table />} /> */}

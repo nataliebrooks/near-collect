@@ -37,8 +37,7 @@ export default function Submit({ contract, currentUser }) {
   };
 
   return (
-    <Link to="/" className="flex flex-1 flex-col h-screen">
-      <main className="flex flex-col justify-start h-full w-full">
+      <main className="flex flex-col justify-between h-full w-full">
         <div className="flex flex-1 flex-col justify-start pt-32 pb-16 pl-16 pr-4">
           <h1 className="text-5xl font-bold text-green-600">thanks!</h1>
           <h6 className="text-xl">your pile has been created.</h6>
@@ -48,8 +47,17 @@ export default function Submit({ contract, currentUser }) {
             for your things.
           </p>
         </div>
+        <div className="flex justify-end items-center">
+          <div className="flex flex-col pt-32 pr-8">
+            <Link
+              to="/"
+              className="bg-transparent shadow-lg hover:shadow-sm  hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent"
+            >
+              continue
+            </Link>
+          </div>
+        </div>
       </main>
-    </Link>
   );
 }
 

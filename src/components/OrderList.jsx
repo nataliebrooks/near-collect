@@ -80,10 +80,7 @@ const OrderList = () => {
 
   return (
     <>
-      <div className="mt-6 pt-4 rounded-t-2xl bg-producer-200">
-        <h1 className="text-xl font-semibold pl-4 text-white">Orders</h1>
         <List loadData={loadItems} renderListItem={renderListItem} />
-      </div>
     </>
   );
 };

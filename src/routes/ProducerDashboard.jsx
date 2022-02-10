@@ -21,7 +21,7 @@ export default function ProducerDashboard() {
         <footer className="flex flex-1 flex-col justify-start pt-32 pb-16 px-4">
           <div className="pl-12 pb-4">
             <p>
-              Or click below to view orders from distributors, or the "piles"
+              Or click below to view orders from distributors, or the piles
               you have minted.
             </p>
           </div>
@@ -38,7 +38,7 @@ export default function ProducerDashboard() {
                 "flex-1 m-2 bg-transparent shadow-lg hover:shadow-sm  hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent"
               }
             >
-              <h6 className="text-xl">items</h6>
+              <h6 className="text-xl">piles</h6>
             </Link>
           </div>
         </footer>

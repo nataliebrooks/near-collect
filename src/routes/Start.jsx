@@ -56,7 +56,7 @@ export default function Start({
             <h1 className="self-center">Vendor</h1>
           </Link>
           <Link
-            to="warehouse"
+            to="storage"
             className={`m-2 p-3 border-2 border-warehouse-400`}
           >
             <h1 className="self-center">Warehouse</h1>

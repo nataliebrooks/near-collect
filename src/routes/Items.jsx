@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import List from '../components/common/List'
 
-const ARRAY_SIZE = 2
+const ARRAY_SIZE = 20
 const RESPONSE_TIME_IN_MS = 1000
 
 function loadItems (startCursor = 0) {
@@ -29,22 +29,25 @@ function loadItems (startCursor = 0) {
 const updateItem = () => {}
 
 const Item = ({ item }) => {
-  const [answer, setAnswer] = useState('')
   return (
     <>
-      <div className="flex flex-1 flex-col justify-between m-2 shadow-lg rounded-lg">
-          <div className="flex justify-center flex-1 overflow-hidden">
-            <img
-              className="w-full h-full bg-cover object-cover object-center"
-              src={item.media}
-            />
+      <div className="flex p-2">
+        <div className="flex flex-1 h-16 shadow-lg hover:shadow-sm hover:-translateY-0.5 overflow-hidden border-2 border-black">
+          <img
+            className="w-full h-full bg-cover object-cover object-center"
+            src={item.media}
+          />
+          <div className="flex flex-1 flex-col justify-center p-4 bg-white">
+            <p className="leading-normal truncate">{item.description}</p>
           </div>
-          <div className="flex flex-col p-4">
-            <div className="flex justify-end">
-              <button onClick={updateItem}>Submit</button>
-            </div>
-          </div>
+            <button
+              className="flex-1 m-2 bg-transparent shadow-sm hover:shadow hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent"
+              onClick={() => updateItem()}
+            >
+              submit
+            </button>
         </div>
+      </div>
     </>
   )
 }
@@ -55,10 +58,12 @@ const renderListItem = (item) => {
 
 const Items = () => {
   return (
-    <>
-      <Link to="/">Back</Link>
+    <main className="flex flex-col justify-start h-full w-full">
+      <div className="flex flex-1 flex-col justify-start pt-32 pb-16 pl-16 pr-4">
+        <h1 className="text-5xl font-bold text-green-600">piles</h1>
+      </div>
       <List loadData={loadItems} renderListItem={renderListItem} />
-    </>
+    </main>
   )
 }
 

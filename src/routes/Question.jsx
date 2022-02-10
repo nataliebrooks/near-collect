@@ -16,7 +16,7 @@ export default function Question({ contract, currentUser }) {
     <main className="flex flex-col justify-start h-full w-full">
       <div className="flex flex-1 flex-col justify-start pt-32 pb-16 pl-16 pr-4">
         <h1 className="text-5xl font-bold text-green-600">describe</h1>
-        <h6 className="text-xl">the items are in your pile</h6>
+        <h6 className="text-xl">what items are in your pile</h6>
       </div>
       <div className="flex flex-1 flex-col px-4">
         <textarea
