@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-export default function TransporterApp() {
+export default function TransporterDashboard() {
   return (
     <main className="flex flex-col justify-start h-full w-full">
       <div className="flex flex-1 flex-col justify-start pt-32 pb-16 pl-16 pr-4">
@@ -28,4 +28,4 @@ export default function TransporterApp() {
   );
 }
 
-TransporterApp.propTypes = {};
+TransporterDashboard.propTypes = {};

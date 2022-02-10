@@ -96,7 +96,7 @@ const Camera = () => {
         />
         {numberOfCameras > 1 ? (
           <ChangeFacingCameraButton
-            className="w-1/3"
+            className="w-1/3 mx-auto"
             onClick={() => {
               if (camera.current) {
                 const result = camera.current.switchCamera();

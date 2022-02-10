@@ -17,7 +17,7 @@ import Start from "./routes/Start";
 import ProducerApp from "./routes/ProducerApp";
 import DistributorApp from "./routes/DistributorApp";
 import OrganizerApp from "./routes/OrganizerApp";
-import TransporterApp from "./routes/TransporterDashboard";
+import TransporterApp from "./routes/TransporterApp";
 import VendorApp from "./routes/VendorApp";
 import StorageApp from "./routes/StorageApp";
 import Camera from "./routes/Camera";
