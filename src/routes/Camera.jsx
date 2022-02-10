@@ -81,11 +81,11 @@ const Camera = () => {
         numberOfCamerasCallback={setNumberOfCameras}
       />
       <div className="flex justify-between fixed bottom-0 w-full">
-        <Link to="/question" state={{ image: image }} className="w-1/3">
+        <Link to="/question" state={{ image: image }} className="w-1/3 mb-4 ml-4">
           <ImagePreview image={image} />
         </Link>
         <TakePhotoButton
-         className="w-1/3"
+          className="w-1/3"
           onClick={() => {
             if (camera.current) {
               const photo = camera.current.takePhoto();
@@ -96,14 +96,16 @@ const Camera = () => {
         />
         {numberOfCameras > 1 ? (
           <ChangeFacingCameraButton
-          className="w-1/3"
+            className="w-1/3"
             onClick={() => {
               if (camera.current) {
                 const result = camera.current.switchCamera();
               }
             }}
           />
-        ) : <span className="w-1/3" />}
+        ) : (
+          <span className="w-1/3" />
+        )}
       </div>
     </div>
   );

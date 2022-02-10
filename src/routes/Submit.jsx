@@ -38,10 +38,17 @@ export default function Submit({ contract, currentUser }) {
 
   return (
     <Link to="/" className="flex flex-1 flex-col h-screen">
-
-      <h1>Thank you!</h1>
-      <h1>Your request has been recorded.</h1>
-      <h1>Please check back to see if anyone has placed an order for your things.</h1>
+      <main className="flex flex-col justify-start h-full w-full">
+        <div className="flex flex-1 flex-col justify-start pt-32 pb-16 pl-16 pr-4">
+          <h1 className="text-5xl font-bold text-green-600">thanks!</h1>
+          <h6 className="text-xl">your pile has been created.</h6>
+          <br />
+          <p>
+            A Distributor will be able to see your new pile and create an order
+            for your things.
+          </p>
+        </div>
+      </main>
     </Link>
   );
 }

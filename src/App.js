@@ -10,24 +10,23 @@ const App = ({ currentUser, wallet }) => {
   };
 
   return (
-    <main className="flex flex-col h-screen w-full">
+    <main className="flex flex-col h-full w-full text-black bg-white">
+      <header className="h-32">
+        <div className="z-40 mx-8">
+          <div className="relative flex items-center text-gray-500">
+            <div>
+              {/* <h2 className="text-xl">{currentUser.accountId}</h2> */}
+            </div>
+            <div className="ml-auto -my-1 hover:text-gray-700">
+              {/* <button onClick={signOut}>Log out</button> */}
+            </div>
+          </div>
+        </div>
+      </header>
       <Outlet />
     </main>
   );
 };
-
-{/* <header>
-<div className="z-40 pt-4 mx-8">
-  <div className="relative flex items-center text-gray-500">
-    <div>
-      <h2 className="text-xl">{currentUser.accountId}</h2>
-    </div>
-    <div className="ml-auto -my-1 hover:text-gray-700">
-      <button onClick={signOut}>Log out</button>
-    </div>
-  </div>
-</div>
-</header> */}
 
 App.propTypes = {
   currentUser: PropTypes.shape({

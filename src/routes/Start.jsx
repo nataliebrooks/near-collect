@@ -11,17 +11,17 @@ export default function Start({
   warehouseColor,
 }) {
   return (
-    <main className="flex flex-col justify-end h-screen w-full">
-      <div className="flex flex-col justify-end h-1/2 pl-16 pr-4">
-        <h1 className="text-5xl font-bold text-green-600">Hello,</h1>
+    <main className="flex flex-col justify-start h-full w-full">
+      <div className="flex flex-1 flex-col justify-start pt-32 pb-16 pl-16 pr-4">
+        <h1 className="text-5xl font-bold text-green-600">hello</h1>
         <h6 className="text-xl">welcome to collect!</h6>
         <br />
         <p>
-          Please explore the proof of concept, or visit the walkthrough 
+          Please explore the proof of concept or visit the walkthrough 
           if you'd like to understand more about how this works.
         </p>
       </div>
-      <div className="flex justify-center items-center h-1/2">
+      <div className="flex justify-center items-center">
         <div className="flex flex-col">
           <Link
             to="producer"

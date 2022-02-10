@@ -74,7 +74,6 @@ const renderListItem = (item) => {
 const ItemList = () => {
   return (
     <>
-      <Link to="/">Back</Link>
       <List loadData={loadItems} renderListItem={renderListItem} />
     </>
   )
