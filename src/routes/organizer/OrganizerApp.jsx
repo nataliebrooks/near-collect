@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import List from "../components/common/List";
+import List from "../../components/common/List";
 
 const ARRAY_SIZE = 2;
 const RESPONSE_TIME_IN_MS = 1000;

@@ -12,30 +12,39 @@ import * as nearAPI from "near-api-js";
 
 // Routes //
 import App from "./App";
+import NotFound from "./routes/NotFound";
 import SignIn from "./routes/SignIn";
 import Start from "./routes/Start";
-import ProducerApp from "./routes/ProducerApp";
-import DistributorApp from "./routes/DistributorApp";
-import OrganizerApp from "./routes/OrganizerApp";
-import TransporterApp from "./routes/TransporterApp";
-import VendorApp from "./routes/VendorApp";
-import StorageApp from "./routes/StorageApp";
+// producer
+import ProducerApp from "./routes/producer/ProducerApp";
+import ProducerDashboard from "./routes/producer/ProducerDashboard";
+import Items from "./routes/producer/Items";
+import Orders from "./routes/producer/Orders";
+// distributor
+import DistributorApp from "./routes/distributor/DistributorApp";
+import DistributorDashboard from "./routes/distributor/DistributorDashboard";
+import Items from "./routes/distributor/Items";
+import Orders from "./routes/distributor/Orders";
+// organizer
+import OrganizerApp from "./routes/organizer/OrganizerApp";
+// transporter
+import TransporterApp from "./routes/transporter/TransporterApp";
+import TransporterDashboard from "./routes/transporter/TransporterDashboard";
+// vendor
+import VendorApp from "./routes/vendorVendorApp";
+import VendorDashboard from "./routes/vendorVendorDashboard";
+import Ideas from "./routes/vendor/Ideas";
+// storage
+import StorageApp from "./routes/storage/StorageApp";
+import StorageDashboard from "./routes/storage/StorageDashboard";
+import Items from "./routes/storage/Items";
+// camera
 import Camera from "./routes/Camera";
 import Question from "./routes/Question";
 import Submit from "./routes/Submit";
-import Items from "./routes/Items";
-import Orders from "./routes/Orders";
-import Ideas from "./routes/Ideas";
-import NotFound from "./routes/NotFound";
 
 // Config
 import getConfig from "./config.js";
-import * as Role from "./utils/roles";
-import DistributorDashboard from "./routes/DistributorDashboard";
-import ProducerDashboard from "./routes/ProducerDashboard";
-import TransporterDashboard from "./routes/TransporterDashboard";
-import StorageDashboard from "./routes/StorageDashboard";
-import VendorDashboard from "./routes/VendorDashboard";
 
 // Initializing contract
 async function initContract() {
@@ -111,12 +120,12 @@ window.nearInitPromise = initContract().then(
               <Route index element={<Start />} />
               <Route path="producer" element={<ProducerApp />}>
                 <Route index element={<ProducerDashboard />} />
-                <Route path="piles" element={<Items title="piles" />} />
+                <Route path="piles" element={<Items />} />
                 <Route path="orders" element={<Orders />} />
               </Route>
               <Route path="distributor" element={<DistributorApp />}>
                 <Route index element={<DistributorDashboard />} />
-                <Route path="piles" element={<Items title="piles" />} />
+                <Route path="piles" element={<Items />} />
                 <Route path="orders" element={<Orders />} />
               </Route>
               <Route path="organizer" element={<OrganizerApp />} />
@@ -130,14 +139,11 @@ window.nearInitPromise = initContract().then(
                 </Route>
               <Route path="storage" element={<StorageApp />}>
                 <Route index element={<StorageDashboard />} />
-                <Route path="items" element={<Items title="items" />} />
+                <Route path="items" element={<Items />} />
               </Route>
               <Route path="camera" element={<Camera />} />
               <Route path="question" element={<Question />} />
               <Route path="submit" element={<Submit />} />
-              {/* <Route path="item" element={<Item />} />
-              <Route path="order" element={<Order />} />
-              <Route path="table" element={<Table />} /> */}
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

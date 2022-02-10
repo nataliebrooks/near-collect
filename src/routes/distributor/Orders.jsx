@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import List from "../components/common/List";
+import List from "../../components/common/List";
 
 const ARRAY_SIZE = 20;
 const RESPONSE_TIME_IN_MS = 1000;
@@ -14,8 +14,17 @@ function loadItems(startCursor = 0) {
       for (let i = startCursor; i < startCursor + ARRAY_SIZE; i++) {
         const newItem = {
           key: i,
-          media: "https://picsum.photos/200",
-          status: "IN_TRANSIT",
+          owner: "efiz.testnet",
+          ownerId: "efiz.testnet",
+          creator: "efiz.testnet",
+          creatorId: "efiz.testnet",
+          tokenId: "123",
+          rootId: "123",
+          image: "https://picsum.photos/200",
+          metadata: "{}",
+          status: "NEW",
+          category: "uncategorized",
+          labels: "[]",
         };
         newArray = [...newArray, newItem];
       }
@@ -39,14 +48,16 @@ const Order = ({ order }) => {
           <div className="flex flex-1 flex-col justify-center p-4 bg-white">
             <p className="leading-normal truncate">{order.status}</p>
           </div>
-            {order.status === "IN_TRANSIT" ? (
+          {order.status === "IN_TRANSIT" ? (
             <button
               className="flex-1 m-2 bg-transparent shadow-sm hover:shadow hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent"
               onClick={() => updateOrder(order)}
             >
               submit
-            </button> )
-            : <span />}
+            </button>
+          ) : (
+            <span />
+          )}
         </div>
       </div>
     </>

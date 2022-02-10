@@ -1,5 +1,5 @@
 import React from "react";
-import List from "../components/common/List";
+import List from "../../components/common/List";
 
 const ARRAY_SIZE = 20;
 const RESPONSE_TIME_IN_MS = 1000;
