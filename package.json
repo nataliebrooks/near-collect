@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "(MIT AND Apache-2.0)",
   "scripts": {
-    "build": "yarn yarn build:web",
+    "build": "yarn build:web",
     "build:contract": "cd nft-contract && ./build.sh && cd .. && ls && cd market-contract && ./build.sh && cd ..",
     "build:web": "parcel build src/index.html --public-url ./",
     "deploy": "yarn build && (yarn test:contract && near dev-deploy --wasmFile res/non-fungible_token.wasm)",
