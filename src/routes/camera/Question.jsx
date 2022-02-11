@@ -3,14 +3,50 @@ import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Question({ contract, currentUser }) {
+  const [loading, setLoading] = useState(false);
+  const [ mockDb, setMockDb ] = useState(null);
   const [answer, setAnswer] = useState("");
   const [showImage, setShowImage] = useState(false);
+  
   const location = useLocation();
   let image = "https://picsum.photos/332/720";
 
   if (location && location.state) {
     image = location.state.image;
   }
+  []
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setLoading(true);
+
+    const newItem = {
+      token_id: `producer.collect.testnet` + Date.now(),
+    receiver_id: 'producer.collect.app',
+    metadata: {
+      description: answer,
+      media: image
+    }};
+    console.log(newItem);
+
+    // Need to upload image  to IPFS and pass URL
+    // https://blog.logrocket.com/decentralized-data-storage-using-ipfs-and-react-a-tutorial-with-examples/#how-to-build-a-frontend-dapp-with-ipfs-and-react
+
+    // const item = await contract.nft_mint(
+    //   {
+    //     token_id: `${currentUser.account}` + Date.now(),
+    //     receiver_id: currentUser.accountId,
+    //     metadata: {
+    //       title: "Test",
+    //       description: answer,
+    //       media: "nothin",
+    //       copies: 1,
+    //     },
+    //   },
+    //   "200000000000000",
+    //   nearAPI.utils.format.parseNearAmount("0.1")
+    // ); // This needs to redirect
+  };
 
   return (
     <main className="flex flex-col justify-start h-full w-full">
@@ -33,13 +69,21 @@ export default function Question({ contract, currentUser }) {
           >
             <h6 className="text-xl">retake picture</h6>
           </Link>
+          <button
+            onClick={handleSubmit}
+            className={
+              "flex-1 m-2 bg-transparent shadow-lg hover:shadow-sm  hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent"
+            }
+          >
+            <h6 className="text-xl">submit</h6>
+          </button>
           <Link
             to="/submit"
             className={
               "flex-1 m-2 bg-transparent shadow-lg hover:shadow-sm  hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent"
             }
           >
-            <h6 className="text-xl">submit</h6>
+            <h6 className="text-xl">done</h6>
           </Link>
         </div>
         <button

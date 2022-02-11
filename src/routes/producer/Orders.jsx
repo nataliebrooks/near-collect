@@ -14,17 +14,9 @@ function loadItems(startCursor = 0) {
       for (let i = startCursor; i < startCursor + ARRAY_SIZE; i++) {
         const newItem = {
           key: i,
-          owner: "efiz.testnet",
-          ownerId: "efiz.testnet",
-          creator: "efiz.testnet",
-          creatorId: "efiz.testnet",
-          tokenId: "123",
-          rootId: "123",
-          image: "https://picsum.photos/200",
-          metadata: "{}",
+          orderId: "efiz.testnet.123123454352",
+          tokenId: "123123454352",
           status: "NEW",
-          category: "uncategorized",
-          labels: "[]",
         };
         newArray = [...newArray, newItem];
       }

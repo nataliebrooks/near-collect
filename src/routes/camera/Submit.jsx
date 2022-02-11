@@ -6,6 +6,7 @@ import * as nearAPI from "near-api-js";
 export default function Submit({ contract, currentUser }) {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
+  const { mockDb, setMockDb } = useState([])
   let image = "https://picsum.photos/332/720";
   let answer = "Two hats, an iphone charger, a water bottle";
   if (location && location.state) {
@@ -17,6 +18,16 @@ export default function Submit({ contract, currentUser }) {
     event.preventDefault();
 
     setLoading(true);
+    mockDb.push({
+      token_id: `producer.collect.testnet` + Date.now(),
+      receiver_id: 'producer.collect.app',
+      metadata: {
+        description: answer,
+        media: image
+      }
+    })
+    setMockDb(mockDb).then(setLoading(false));
+    // navigate
     // Need to upload image  to IPFS and pass URL
     // https://blog.logrocket.com/decentralized-data-storage-using-ipfs-and-react-a-tutorial-with-examples/#how-to-build-a-frontend-dapp-with-ipfs-and-react
 

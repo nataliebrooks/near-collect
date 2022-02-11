@@ -32,7 +32,7 @@ export default function ProducerDashboard() {
               <h6 className="text-xl">orders</h6>
             </Link>
             <Link
-              to="items"
+              to="piles"
               className={
                 "flex-1 m-2 bg-transparent shadow-lg hover:shadow-sm  hover:bg-black  hover:text-green-500 py-2 px-4 border-2 border-black hover:border-transparent"
               }
