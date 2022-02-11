@@ -1,5 +1,5 @@
 import { near, JSONValue, json, ipfs, log } from "@graphprotocol/graph-ts";
-import { Order } from "../../generated/schema";
+import { Order, Token } from "../../generated/schema";
 
 export function handleReceipt(receipt: near.ReceiptWithOutcome): void {
   const actions = receipt.receipt.actions;
@@ -52,7 +52,11 @@ function handleAction(
           order.tokenId = tokenId.toString();
           if (status) {
             order.status = status.toString();
-          }      
+          }
+          let token = Token.load(tokenId.toString());
+          if (token) {
+            order.token = token;
+          }
           
           order.save();
         }

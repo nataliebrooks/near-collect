@@ -32,6 +32,7 @@ type Order @entity {
   orderId: String!
   tokenId: String!
   status: OrderStatus!
+  token: Token!
 }
 
 

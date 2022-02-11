@@ -275,6 +275,7 @@ export class Order extends Entity {
     this.set("orderId", Value.fromString(""));
     this.set("tokenId", Value.fromString(""));
     this.set("status", Value.fromString(""));
+    this.set("token", Value.fromString(""));
   }
 
   save(): void {
@@ -328,5 +329,14 @@ export class Order extends Entity {
 
   set status(value: string) {
     this.set("status", Value.fromString(value));
+  }
+
+  get token(): string {
+    let value = this.get("token");
+    return value!.toString();
+  }
+
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
   }
 }

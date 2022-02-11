@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../components/shared/Button";
 
 export default function DistributorDashboard() {
   return (

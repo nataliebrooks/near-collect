@@ -3,14 +3,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link, Outlet } from "react-router-dom";
 
-const App = ({ currentUser, wallet }) => {
-  const signOut = () => {
-    wallet.signOut();
-    window.location.replace(window.location.origin + window.location.pathname);
-  };
+const App = () => {
+  // const signOut = () => {
+  //   wallet.signOut();
+  //   window.location.replace(window.location.origin + window.location.pathname);
+  // };
 
   return (
-    <main className="flex flex-col h-full w-full text-black bg-white">
+    <main className="flex flex-col h-full w-full text-black bg-white pb-32">
       <header className="h-32">
         <div className="z-40 mx-8">
           <div className="relative flex items-center text-gray-500">
@@ -28,15 +28,15 @@ const App = ({ currentUser, wallet }) => {
   );
 };
 
-App.propTypes = {
-  currentUser: PropTypes.shape({
-    accountId: PropTypes.string.isRequired,
-    balance: PropTypes.string.isRequired,
-  }).isRequired,
-  wallet: PropTypes.shape({
-    requestSignIn: PropTypes.func.isRequired,
-    signOut: PropTypes.func.isRequired,
-  }).isRequired,
-};
+// App.propTypes = {
+//   currentUser: PropTypes.shape({
+//     accountId: PropTypes.string.isRequired,
+//     balance: PropTypes.string.isRequired,
+//   }).isRequired,
+//   wallet: PropTypes.shape({
+//     requestSignIn: PropTypes.func.isRequired,
+//     signOut: PropTypes.func.isRequired,
+//   }).isRequired,
+// };
 
 export default App;
